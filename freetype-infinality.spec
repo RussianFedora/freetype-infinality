@@ -143,7 +143,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 %exclude /usr/lib/debug
 %doc README
-%doc docs/LICENSE.TXT docs/FTL.TXT
+%doc docs/LICENSE.TXT docs/FTL.TXT docs/GPLv2.txt
 %doc docs/CHANGES docs/VERSION.DLL docs/formats.txt 
 
 
