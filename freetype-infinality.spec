@@ -1,9 +1,9 @@
-%define freetypelibversion 6.6.2
+%define freetypelibversion 6.7.1
 
 Summary: A free and portable font rendering engine
 Name: freetype-infinality
 Version: 2.4.6
-Release: 1%{?dist}.1.R
+Release: 1%{?dist}.2.R
 License: FTL or GPLv2+
 Group: System Environment/Libraries
 URL: http://www.freetype.org
@@ -148,6 +148,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 14 2011 Arkady L. Shane <ashejn@yandex-team.ru> 2.4.6-1.2.R
+- fix lib version
+
 * Fri Sep 16 2011 Arkady L. Shane <ashejn@yandex-team.ru> 2.4.6-1.1.R
 - update to 2.4.6
 - update patches and drop depricated
