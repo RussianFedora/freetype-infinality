@@ -3,7 +3,7 @@
 Summary: A free and portable font rendering engine
 Name: freetype-infinality
 Version: 2.4.6
-Release: 1%{?dist}.2.R
+Release: 2%{?dist}.R
 License: FTL or GPLv2+
 Group: System Environment/Libraries
 URL: http://www.freetype.org
@@ -129,11 +129,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %post 
 /sbin/ldconfig
-/usr/sbin/semanage fcontext -a -t textrel_shlib_t %{_libdir}/freetype-infinality/libfreetype.so.%{freetypelibversion}
-/sbin/restorecon %{_libdir}/freetype-infinality/libfreetype.so.%{freetypelibversion}
+/usr/sbin/semanage fcontext -a -t textrel_shlib_t /usr/lib/freetype-infinality/libfreetype.so.%{freetypelibversion}
+/sbin/restorecon /usr/lib/freetype-infinality/libfreetype.so.%{freetypelibversion}
 
 %postun 
-/usr/sbin/semanage fcontext -d -t textrel_shlib_t %{_libdir}/freetype-infinality/libfreetype.so.%{freetypelibversion}
+/usr/sbin/semanage fcontext -d -t textrel_shlib_t /usr/lib/freetype-infinality/libfreetype.so.%{freetypelibversion}
 /sbin/ldconfig
 
 
@@ -148,6 +148,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 22 2011 Arkady L. Shane <ashejn@yandex-team.ru> 2.4.6-2.R
+- try to fix SELinux rules
+
 * Fri Oct 14 2011 Arkady L. Shane <ashejn@yandex-team.ru> 2.4.6-1.2.R
 - fix lib version
 
