@@ -1,0 +1,343 @@
+--- freetype-infinality-orig.spec	2011-12-01 15:44:26.584702671 +0400
++++ freetype-infinality.spec	2011-11-26 07:51:13.000000000 +0400
+@@ -1,20 +1,38 @@
++# Patented subpixel rendering disabled by default.
++# Pass '--with subpixel_rendering' on rpmbuild command-line to enable.
++#%{!?_with_subpixel_rendering: %{!?_without_subpixel_rendering: %define _without_subpixel_rendering --without-subpixel_rendering}}
++
++%{!?with_xfree86:%define with_xfree86 1}
++
++%define infinalityrelease 20111125_1
++
+ %define freetypelibversion 6.8.0
++%define oldfreetypelibversion 6.6.2
++%define createsymlink 0
+ 
+ Summary: A free and portable font rendering engine
+ Name: freetype-infinality
+ Version: 2.4.8
+-Release: 1%{?dist}.R
++Release: 1.%{infinalityrelease}%{?dist}
+ License: FTL or GPLv2+
+ Group: System Environment/Libraries
+ URL: http://www.freetype.org
+ Source:  http://download.savannah.gnu.org/releases/freetype/freetype-%{version}.tar.bz2
++#Source1: http://download.savannah.gnu.org/releases/freetype/freetype-doc-%{version}.tar.bz2
++#Source2: http://download.savannah.gnu.org/releases/freetype/ft2demos-%{version}.tar.bz2
+ 
+ Patch20: freetype-add-subpixel-hinting-infinality-20111125-01.patch
+ Patch21: freetype-enable-subpixel-hinting-infinality-20100909-1.patch
+ Patch22: freetype-entire-infinality-patchset-20111125-01.patch
++Source90: local.conf
++Source91: infinality-settings.sh
++Source92: README.infinality
++#Patch23: freetype-filter-envvar-fix-20101117-1.patch
+ 
+ # Enable otvalid and gxvalid modules
+ Patch46:  freetype-2.2.1-enable-valid.patch
++# Enable additional demos
++Patch47:  freetype-2.3.11-more-demos.patch
+ 
+ # Fix multilib conflicts
+ Patch88:  freetype-multilib.patch
+@@ -28,7 +46,6 @@
+ Obsoletes: freetype-subpixel
+ 
+ Requires:      /etc/ld.so.conf.d
+-BuildRequires: libX11-devel
+ 
+ %description
+ The FreeType engine is a free and portable font rendering
+@@ -42,6 +59,17 @@
+ rendering enabled. It transparently overrides the system library using
+ ld.so.conf.d.
+ 
++#%package demos
++#Summary: A collection of FreeType demos
++#Group: System Environment/Libraries
++#Requires: %{name} = %{version}-%{release}
++
++#%description demos
++#The FreeType engine is a free and portable font rendering
++#engine, developed to provide advanced font support for a variety of
++#platforms and environments.  The demos package includes a set of useful
++#small utilities showing various capabilities of the FreeType library.
++
+ 
+ %package devel
+ Summary: FreeType development libraries and header files
+@@ -59,13 +87,19 @@
+ 
+ 
+ %prep
++#%setup -q -b 1 -a 2
+ %setup -q -n freetype-%{version}
+ 
+ %patch20  -p1 -b .add-subpixel-hinting
+ %patch21  -p1 -b .enable-subpixel-hinting
+ %patch22  -p1 -b .entire-infinality-patchset
++#%patch23  -p1 -b .temporary-filter-fix
++
++#%patch46  -p1 -b .enable-valid
+ 
+-%patch46  -p1 -b .enable-valid
++#pushd ft2demos-%{version}
++#%patch47  -p1 -b .more-demos
++#popd
+ 
+ %patch88 -p1 -b .multilib
+ 
+@@ -76,17 +110,39 @@
+ sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' builds/unix/libtool
+ make %{?_smp_mflags}
+ 
++#%if %{with_xfree86}
++## Build demos
++#pushd ft2demos-%{version}
++#make TOP_DIR=".."
++#popd
++#%endif
++
++# Convert FTL.txt to UTF-8
++pushd docs
++iconv -f latin1 -t utf-8 < FTL.TXT > FTL.TXT.tmp && \
++touch -r FTL.TXT FTL.TXT.tmp && \
++mv FTL.TXT.tmp FTL.TXT
++popd
++
++
+ %install
+ rm -rf $RPM_BUILD_ROOT
+ 
+-umask 0022
+ 
+ %makeinstall gnulocaledir=$RPM_BUILD_ROOT%{_datadir}/locale
+ 
+-# Don't package static a or .la files nor devel files
+-rm -rf $RPM_BUILD_ROOT%{_libdir}/*.{a,la,so} \
+-       $RPM_BUILD_ROOT%{_libdir}/pkgconfig $RPM_BUILD_ROOT%{_bindir} \
+-       $RPM_BUILD_ROOT%{_datadir}/aclocal $RPM_BUILD_ROOT%{_includedir}
++#{
++#  for ftdemo in ftbench ftchkwd ftmemchk ftpatchk fttimer ftdump ftlint ftmemchk ftvalid ; do
++#      builds/unix/libtool --mode=install install -m 755 ft2demos-%{version}/bin/$ftdemo $RPM_BUILD_ROOT/%{_bindir}
++#  done
++#}
++#%if %{with_xfree86}
++#{
++#  for ftdemo in ftdiff ftgamma ftgrid ftmulti ftstring fttimer ftview ; do
++#      builds/unix/libtool --mode=install install -m 755 ft2demos-%{version}/bin/$ftdemo $RPM_BUILD_ROOT/%{_bindir}
++#  done
++#}
++#%endif
+ 
+ # fix multilib issues
+ %ifarch x86_64 s390x ia64 ppc64 alpha sparc64
+@@ -95,6 +151,28 @@
+ %define wordsize 32
+ %endif
+ 
++mv $RPM_BUILD_ROOT%{_includedir}/freetype2/freetype/config/ftconfig.h \
++   $RPM_BUILD_ROOT%{_includedir}/freetype2/freetype/config/ftconfig-%{wordsize}.h
++cat >$RPM_BUILD_ROOT%{_includedir}/freetype2/freetype/config/ftconfig.h <<EOF
++#ifndef __FTCONFIG_H__MULTILIB
++#define __FTCONFIG_H__MULTILIB
++
++#include <bits/wordsize.h>
++
++#if __WORDSIZE == 32
++# include "ftconfig-32.h"
++#elif __WORDSIZE == 64
++# include "ftconfig-64.h"
++#else
++# error "unexpected value for __WORDSIZE macro"
++#endif
++
++#endif 
++EOF
++
++# Don't package static a or .la files
++rm -f $RPM_BUILD_ROOT%{_libdir}/*.{a,la}
++
+ # Move library to avoid conflict with official FreeType package
+ mkdir $RPM_BUILD_ROOT%{_libdir}/%{name}
+ mv -f $RPM_BUILD_ROOT%{_libdir}/libfreetype.so.* \
+@@ -102,6 +180,16 @@
+ cd $RPM_BUILD_ROOT%{_libdir}/%{name}
+ cd -
+ 
++%if %{createsymlink}
++  cd $RPM_BUILD_ROOT%{_libdir}/%{name}
++  ln -s libfreetype.so.%{freetypelibversion} libfreetype.so.%{oldfreetypelibversion}
++  cd -
++%endif
++
++# Don't create a symlink in the /usr/lib directory
++rm $RPM_BUILD_ROOT%{_libdir}/libfreetype.so
++
++
+ # Register the library directory in /etc/ld.so.conf.d
+ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d
+ echo "%{_libdir}/%{name}" \
+@@ -111,6 +199,20 @@
+ 
+ /bin/echo "PRELOAD=1; if [ -f /etc/sysconfig/fonts ]; then . /etc/sysconfig/fonts; fi; A1=\`arch\`; A2=%{_arch}; if [ \"\${A1:0:1}\" = \"\${A2:0:1}\" -a ! \"\$PRELOAD\" = \"0\" ]; then ADDED=\`/bin/echo \$LD_PRELOAD | grep \"%{_libdir}/libfreetype.so.6\" | wc -l\`; if [ \"\$ADDED\" = \"0\" ]; then export LD_PRELOAD=%{_libdir}/%{name}/libfreetype.so.%{freetypelibversion}:\$LD_PRELOAD ; fi; fi" > $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/%{name}-%{_arch}.sh
+ 
++mkdir -p $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
++cp %{SOURCE90} $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
++cp %{SOURCE91} $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
++cp %{SOURCE92} $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
++cp %{PATCH20} $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
++cp %{PATCH21} $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
++cp %{PATCH22} $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
++cp $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/%{name}-%{_arch}.sh $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/%{name}.sh
++
++cd $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
++tar jcf %{name}-%{version}-%{infinalityrelease}.tar.bz2 %{name}.sh `basename %{SOURCE90}` `basename  %{SOURCE91}` `basename  %{SOURCE92}` `basename  %{PATCH20}` `basename  %{PATCH21}` `basename  %{PATCH22}`
++rm %{name}.sh `basename %{SOURCE90}` `basename  %{SOURCE91}` `basename  %{SOURCE92}` `basename  %{PATCH20}` `basename  %{PATCH21}` `basename  %{PATCH22}`
++cd -
++
+ %clean
+ rm -rf $RPM_BUILD_ROOT
+ 
+@@ -126,40 +228,120 @@
+ 
+ %post 
+ /sbin/ldconfig
+-/usr/sbin/semanage fcontext -a -t textrel_shlib_t /usr/lib/freetype-infinality/libfreetype.so.%{freetypelibversion}
+-/sbin/restorecon /usr/lib/freetype-infinality/libfreetype.so.%{freetypelibversion}
++/usr/sbin/semanage fcontext -a -t textrel_shlib_t %{_libdir}/freetype-infinality/libfreetype.so.%{freetypelibversion}
++/sbin/restorecon %{_libdir}/freetype-infinality/libfreetype.so.%{freetypelibversion}
++#/bin/echo
++#/bin/echo "##############################################"
++#/bin/echo "There are important changes in this release.  Please install the infinality-settings package or make sure these environment variables are present:  http://www.infinality.net/files/infinality-settings.sh"
++#/bin/echo "##############################################"
+ 
+ %postun 
+-/usr/sbin/semanage fcontext -d -t textrel_shlib_t /usr/lib/freetype-infinality/libfreetype.so.%{freetypelibversion}
++/usr/sbin/semanage fcontext -d -t textrel_shlib_t %{_libdir}/freetype-infinality/libfreetype.so.%{freetypelibversion}
+ /sbin/ldconfig
+ 
+ 
+ %files
+ %defattr(-,root,root)
+-%{_libdir}/*
++%{_libdir}/%{name}
+ %{_sysconfdir}/*
+-%exclude /usr/lib/debug
+ %doc README
+-%doc docs/LICENSE.TXT docs/FTL.TXT docs/GPLv2.TXT
++%doc docs/LICENSE.TXT docs/FTL.TXT 
++#docs/GPL.TXT
+ %doc docs/CHANGES docs/VERSION.DLL docs/formats.txt 
++#docs/ft2faq.html
++/usr/share/doc/%{name}-%{version}/%{name}-%{version}-%{infinalityrelease}.tar.bz2
+ 
++#%files demos
++#%defattr(-,root,root)
++#%{_bindir}/ftbench
++#%{_bindir}/ftchkwd
++#%{_bindir}/ftmemchk
++#%{_bindir}/ftpatchk
++#%{_bindir}/fttimer
++#%{_bindir}/ftdump
++#%{_bindir}/ftlint
++#%{_bindir}/ftmemchk
++#%{_bindir}/ftvalid
++#%if %{with_xfree86}
++#%{_bindir}/ftdiff
++#%{_bindir}/ftgamma
++#%{_bindir}/ftgrid
++#%{_bindir}/ftmulti
++#%{_bindir}/ftstring
++#%{_bindir}/fttimer
++#%{_bindir}/ftview
++#%endif
++#%doc ChangeLog README
+ 
+-%changelog
+-* Tue Nov 22 2011 Arkady L. Shane <ashejn@yandex-team.ru> 2.4.6-2.R
+-- try to fix SELinux rules
+-
+-* Fri Oct 14 2011 Arkady L. Shane <ashejn@yandex-team.ru> 2.4.6-1.2.R
+-- fix lib version
+-
+-* Fri Sep 16 2011 Arkady L. Shane <ashejn@yandex-team.ru> 2.4.6-1.1.R
+-- update to 2.4.6
+-- update patches and drop depricated
+-
+-* Fri Apr 22 2011 Arkady L. Shane <ashejn@yandex-team.ru> 2.4.4-1.1
+-- rebuilt
++%files devel
++%defattr(-,root,root)
++%dir %{_includedir}/freetype2
++%{_datadir}/aclocal/freetype2.m4
++%{_includedir}/freetype2/*
++%{_includedir}/*.h
++#%{_libdir}/libfreetype.so
++%{_bindir}/freetype-config
++%{_libdir}/pkgconfig/freetype2.pc
++#%doc docs/design
++#%doc docs/glyphs
++#%doc docs/reference
++#%doc docs/tutorial
+ 
+-* Fri Mar 18 2011 Arkady L. Shane <ashejn@yandex-team.ru> 2.4.4-1
+-- apply infinality patches
++%changelog
++* Tue Nov 15 2011 Marek Kasik <mkasik@redhat.com> 2.4.8-1
++- Update to 2.4.8
++- Remove an unneeded patch
++
++* Wed Oct 26 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4.7-2
++- Rebuilt for glibc bug#747377
++
++* Thu Oct 20 2011 Marek Kasik <mkasik@redhat.com> 2.4.7-1
++- Update to 2.4.7
++- Fixes CVE-2011-3256
++- Resolves: #747262
++
++* Thu Aug  4 2011 Marek Kasik <mkasik@redhat.com> 2.4.6-1
++- Update to 2.4.6
++
++* Wed Jul 20 2011 Marek Kasik <mkasik@redhat.com> 2.4.5-2
++- Add freetype-2.4.5-CVE-2011-0226.patch
++    (Add better argument check for `callothersubr'.)
++    - based on patches by Werner Lemberg,
++      Alexei Podtelezhnikov and Matthias Drochner
++- Resolves: #723469
++
++* Tue Jun 28 2011 Marek Kasik <mkasik@redhat.com> 2.4.5-1
++- Update to 2.4.5
++
++* Tue Mar  8 2011 Marek Kasik <mkasik@redhat.com> 2.4.4-4
++- Fix autohinting fallback (#547532).
++- Ignore CFF-based OTFs.
++
++* Sun Feb 20 2011 Marek Kasik <mkasik@redhat.com> 2.4.4-3
++- Enable bytecode interpreter (#547532).
++- Fall back to autohinting if a TTF/OTF doesn't contain any bytecode.
++
++* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4.4-2
++- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
++
++* Thu Dec  2 2010 Marek Kasik <mkasik@redhat.com> 2.4.4-1
++- Update to 2.4.4
++- Remove freetype-2.4.3-CVE-2010-3855.patch
++- Resolves: #659020
++
++* Mon Nov 15 2010 Marek Kasik <mkasik@redhat.com> 2.4.3-2
++- Add freetype-2.4.3-CVE-2010-3855.patch
++    (Protect against invalid `runcnt' values.)
++- Resolves: #651764
++
++* Tue Oct 26 2010 Marek Kasik <mkasik@redhat.com> 2.4.3-1
++- Update to 2.4.3
++- Resolves: #639906
++
++* Wed Oct  6 2010 Marek Kasik <mkasik@redhat.com> 2.4.2-3
++- Add freetype-2.4.2-CVE-2010-3311.patch
++    (Don't seek behind end of stream.)
++- Resolves: #638522
+ 
+ * Fri Aug  6 2010 Matthias Clasen <mclasen@redhat.com> 2.4.2-2
+ - Fix a thinko, we still want to disable the bytecode interpreter

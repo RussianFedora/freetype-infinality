@@ -1,25 +1,23 @@
-%define freetypelibversion 6.7.1
+%define freetypelibversion 6.8.0
 
 Summary: A free and portable font rendering engine
 Name: freetype-infinality
-Version: 2.4.6
-Release: 2%{?dist}.R
+Version: 2.4.8
+Release: 1%{?dist}.R
 License: FTL or GPLv2+
 Group: System Environment/Libraries
 URL: http://www.freetype.org
 Source:  http://download.savannah.gnu.org/releases/freetype/freetype-%{version}.tar.bz2
 
-Patch20: freetype-add-subpixel-hinting-infinality-20110604-1.patch
+Patch20: freetype-add-subpixel-hinting-infinality-20111125-01.patch
 Patch21: freetype-enable-subpixel-hinting-infinality-20100909-1.patch
-Patch22: freetype-entire-infinality-patchset-20110604-1.patch
-
+Patch22: freetype-entire-infinality-patchset-20111125-01.patch
 
 # Enable otvalid and gxvalid modules
 Patch46:  freetype-2.2.1-enable-valid.patch
 
 # Fix multilib conflicts
 Patch88:  freetype-multilib.patch
-Patch89:  freetype-2.4.2-CVE-2010-3311.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-root-%(%{__id_u} -n)
 
@@ -65,12 +63,11 @@ FreeType.
 
 %patch20  -p1 -b .add-subpixel-hinting
 %patch21  -p1 -b .enable-subpixel-hinting
-%patch22  -p1 -b .enhance-emboldening
+%patch22  -p1 -b .entire-infinality-patchset
 
 %patch46  -p1 -b .enable-valid
 
 %patch88 -p1 -b .multilib
-%patch89 -p1 -b .CVE-2010-3311
 
 %build
 

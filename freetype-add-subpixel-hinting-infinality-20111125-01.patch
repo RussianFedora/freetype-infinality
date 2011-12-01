@@ -1,6 +1,6 @@
 diff -Nur freetype-orig/ChangeLog.rej freetype-subpixel/ChangeLog.rej
 --- freetype-orig/ChangeLog.rej	1969-12-31 18:00:00.000000000 -0600
-+++ freetype-subpixel/ChangeLog.rej	2011-04-29 18:26:58.194160202 -0500
++++ freetype-subpixel/ChangeLog.rej	2011-11-17 20:59:44.127886548 -0600
 @@ -0,0 +1,53 @@
 +--- ChangeLog
 ++++ ChangeLog
@@ -56,9 +56,9 @@ diff -Nur freetype-orig/ChangeLog.rej freetype-subpixel/ChangeLog.rej
 + 
 + 	[truetype] Always check the checksum to identify tricky fonts.
 diff -Nur freetype-orig/devel/ftoption.h freetype-subpixel/devel/ftoption.h
---- freetype-orig/devel/ftoption.h	2011-04-29 18:14:22.706916180 -0500
-+++ freetype-subpixel/devel/ftoption.h	2011-04-29 18:26:58.214161348 -0500
-@@ -549,6 +549,48 @@
+--- freetype-orig/devel/ftoption.h	2011-07-19 23:46:00.000000000 -0500
++++ freetype-subpixel/devel/ftoption.h	2011-11-17 20:59:44.148885820 -0600
+@@ -560,6 +560,48 @@
  
    /*************************************************************************/
    /*                                                                       */
@@ -108,9 +108,9 @@ diff -Nur freetype-orig/devel/ftoption.h freetype-subpixel/devel/ftoption.h
    /* of the TrueType bytecode interpreter is used that doesn't implement   */
    /* any of the patented opcodes and algorithms.  The patents related to   */
 diff -Nur freetype-orig/include/freetype/config/ftoption.h freetype-subpixel/include/freetype/config/ftoption.h
---- freetype-orig/include/freetype/config/ftoption.h	2011-04-29 18:14:22.710916409 -0500
-+++ freetype-subpixel/include/freetype/config/ftoption.h	2011-04-29 18:26:58.215161406 -0500
-@@ -549,6 +549,48 @@
+--- freetype-orig/include/freetype/config/ftoption.h	2011-07-19 23:46:15.000000000 -0500
++++ freetype-subpixel/include/freetype/config/ftoption.h	2011-11-17 20:59:44.149885785 -0600
+@@ -560,6 +560,48 @@
  
    /*************************************************************************/
    /*                                                                       */
@@ -160,29 +160,9 @@ diff -Nur freetype-orig/include/freetype/config/ftoption.h freetype-subpixel/inc
    /* of the TrueType bytecode interpreter is used that doesn't implement   */
    /* any of the patented opcodes and algorithms.  The patents related to   */
 diff -Nur freetype-orig/include/freetype/internal/ftobjs.h freetype-subpixel/include/freetype/internal/ftobjs.h
---- freetype-orig/include/freetype/internal/ftobjs.h	2011-04-29 18:14:22.722917096 -0500
-+++ freetype-subpixel/include/freetype/internal/ftobjs.h	2011-04-29 18:26:58.218161577 -0500
-@@ -4,7 +4,7 @@
- /*                                                                         */
- /*    The FreeType private base classes (specification).                   */
- /*                                                                         */
--/*  Copyright 1996-2001, 2002, 2003, 2004, 2005, 2006, 2008, 2010 by       */
-+/*  Copyright 1996-2006, 2008, 2010-2011 by                                */
- /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
- /*                                                                         */
- /*  This file is part of the FreeType project, and may only be used,       */
-@@ -73,14 +73,22 @@
- #define FT_ABS( a )     ( (a) < 0 ? -(a) : (a) )
- 
- 
--#define FT_PAD_FLOOR( x, n )  ( (x) & ~((n)-1) )
--#define FT_PAD_ROUND( x, n )  FT_PAD_FLOOR( (x) + ((n)/2), n )
--#define FT_PAD_CEIL( x, n )   FT_PAD_FLOOR( (x) + ((n)-1), n )
-+#define FT_PAD_FLOOR( x, n )  ( (x) & ~( (n) - 1 ) )
-+#define FT_PAD_ROUND( x, n )  FT_PAD_FLOOR( (x) + ( (n) / 2 ), n )
-+#define FT_PAD_CEIL( x, n )   FT_PAD_FLOOR( (x) + ( (n) - 1 ), n )
- 
- #define FT_PIX_FLOOR( x )     ( (x) & ~63 )
+--- freetype-orig/include/freetype/internal/ftobjs.h	2010-07-18 11:07:31.000000000 -0500
++++ freetype-subpixel/include/freetype/internal/ftobjs.h	2011-11-17 20:59:44.150885751 -0600
+@@ -81,6 +81,14 @@
  #define FT_PIX_ROUND( x )     FT_PIX_FLOOR( (x) + 32 )
  #define FT_PIX_CEIL( x )      FT_PIX_FLOOR( (x) + 63 )
  
@@ -198,8 +178,8 @@ diff -Nur freetype-orig/include/freetype/internal/ftobjs.h freetype-subpixel/inc
    /*
     *  Return the highest power of 2 that is <= value; this correspond to
 diff -Nur freetype-orig/src/truetype/rules.mk freetype-subpixel/src/truetype/rules.mk
---- freetype-orig/src/truetype/rules.mk	2011-04-29 18:14:22.782920530 -0500
-+++ freetype-subpixel/src/truetype/rules.mk	2011-04-29 18:26:58.221161748 -0500
+--- freetype-orig/src/truetype/rules.mk	2011-01-03 00:06:51.000000000 -0600
++++ freetype-subpixel/src/truetype/rules.mk	2011-11-17 20:59:44.152885682 -0600
 @@ -31,7 +31,8 @@
                $(TT_DIR)/ttinterp.c \
                $(TT_DIR)/ttobjs.c   \
@@ -211,17 +191,8 @@ diff -Nur freetype-orig/src/truetype/rules.mk freetype-subpixel/src/truetype/rul
  # TrueType driver headers
  #
 diff -Nur freetype-orig/src/truetype/truetype.c freetype-subpixel/src/truetype/truetype.c
---- freetype-orig/src/truetype/truetype.c	2011-04-29 18:14:22.782920530 -0500
-+++ freetype-subpixel/src/truetype/truetype.c	2011-04-29 18:26:58.222161805 -0500
-@@ -4,7 +4,7 @@
- /*                                                                         */
- /*    FreeType TrueType driver component (body only).                      */
- /*                                                                         */
--/*  Copyright 1996-2001, 2004, 2006 by                                     */
-+/*  Copyright 1996-2001, 2004, 2006, 2011 by                               */
- /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
- /*                                                                         */
- /*  This file is part of the FreeType project, and may only be used,       */
+--- freetype-orig/src/truetype/truetype.c	2009-07-03 08:28:24.000000000 -0500
++++ freetype-subpixel/src/truetype/truetype.c	2011-11-17 20:59:44.152885682 -0600
 @@ -27,6 +27,7 @@
  
  #ifdef TT_USE_BYTECODE_INTERPRETER
@@ -231,8 +202,8 @@ diff -Nur freetype-orig/src/truetype/truetype.c freetype-subpixel/src/truetype/t
  
  #ifdef TT_CONFIG_OPTION_GX_VAR_SUPPORT
 diff -Nur freetype-orig/src/truetype/ttgload.c freetype-subpixel/src/truetype/ttgload.c
---- freetype-orig/src/truetype/ttgload.c	2011-04-29 18:14:22.783920587 -0500
-+++ freetype-subpixel/src/truetype/ttgload.c	2011-04-29 18:26:58.224161920 -0500
+--- freetype-orig/src/truetype/ttgload.c	2011-04-21 00:31:48.000000000 -0500
++++ freetype-subpixel/src/truetype/ttgload.c	2011-11-17 20:59:44.153885647 -0600
 @@ -32,6 +32,7 @@
  #endif
  
@@ -261,7 +232,18 @@ diff -Nur freetype-orig/src/truetype/ttgload.c freetype-subpixel/src/truetype/tt
      if ( !loader->linear_def )
      {
        loader->linear_def = 1;
-@@ -1651,12 +1665,23 @@
+@@ -920,6 +934,10 @@
+       error = TT_Hint_Glyph( loader, 0 );
+     }
+ 
++    /* crashy */
++    /*if  ( loader->exec->sph_tweak_flags & SPH_TWEAK_DEEMBOLDEN )
++      FT_Outline_Embolden(outline, 24);*/
++
+     return error;
+   }
+ 
+@@ -1651,12 +1669,23 @@
      {
        FT_Byte*  widthp;
  
@@ -285,7 +267,7 @@ diff -Nur freetype-orig/src/truetype/ttgload.c freetype-subpixel/src/truetype/tt
          glyph->metrics.horiAdvance = *widthp << 6;
      }
  
-@@ -1851,6 +1876,15 @@
+@@ -1851,6 +1880,15 @@
      {
        TT_ExecContext  exec;
        FT_Bool         grayscale;
@@ -301,7 +283,7 @@ diff -Nur freetype-orig/src/truetype/ttgload.c freetype-subpixel/src/truetype/tt
  
  
        if ( !size->cvt_ready )
-@@ -1868,20 +1902,87 @@
+@@ -1868,11 +1906,86 @@
        if ( !exec )
          return TT_Err_Could_Not_Find_Context;
  
@@ -318,6 +300,11 @@ diff -Nur freetype-orig/src/truetype/ttgload.c freetype-subpixel/src/truetype/tt
 +      {
 +        grayscale = grayscale_hinting = TRUE;
 +        subpixel_hinting = FALSE;
++      }
++
++      if ( FT_IS_TRICKY( glyph->face ) )
++      {
++        subpixel_hinting = grayscale_hinting = FALSE;
 +      }
 +
 +      exec->enhanced           = subpixel_hinting || grayscale_hinting;
@@ -364,16 +351,13 @@ diff -Nur freetype-orig/src/truetype/ttgload.c freetype-subpixel/src/truetype/tt
 +        tt_size_run_prep( size, pedantic );
 +      }
 +
-       /* a change from mono to grayscale rendering (and vice versa) */
-       /* requires a re-execution of the CVT program                 */
--      if ( grayscale != exec->grayscale )
++      /* a change from mono to grayscale rendering (and vice versa) */
++      /* requires a re-execution of the CVT program                 */
 +      if ( grayscale != exec->grayscale_hinting )
-       {
-         FT_UInt  i;
- 
- 
--        FT_TRACE4(( "tt_loader_init: grayscale change,"
--                    " re-executing `prep' table\n" ));
++      {
++        FT_UInt  i;
++
++
 +        exec->grayscale_hinting = grayscale_hinting;
 +
 +        for ( i = 0; i < size->cvt_size; i++ )
@@ -383,16 +367,10 @@ diff -Nur freetype-orig/src/truetype/ttgload.c freetype-subpixel/src/truetype/tt
 +
 +#else /* !TT_CONFIG_OPTION_SUBPIXEL_HINTING */
 +
-+      /* a change from mono to grayscale rendering (and vice versa) */
-+      /* requires a re-execution of the CVT program                 */
-+      if ( grayscale != exec->grayscale )
-+      {
-+        FT_UInt  i;
-+
- 
-         exec->grayscale = grayscale;
- 
-@@ -1890,6 +1991,8 @@
+       /* a change from mono to grayscale rendering (and vice versa) */
+       /* requires a re-execution of the CVT program                 */
+       if ( grayscale != exec->grayscale )
+@@ -1890,6 +2003,8 @@
          tt_size_run_prep( size, pedantic );
        }
  
@@ -402,9 +380,9 @@ diff -Nur freetype-orig/src/truetype/ttgload.c freetype-subpixel/src/truetype/tt
        if ( exec->GS.instruct_control & 1 )
          load_flags |= FT_LOAD_NO_HINTING;
 diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/ttinterp.c
---- freetype-orig/src/truetype/ttinterp.c	2011-04-29 18:14:22.785920701 -0500
-+++ freetype-subpixel/src/truetype/ttinterp.c	2011-04-29 18:26:58.233162434 -0500
-@@ -23,13 +23,16 @@
+--- freetype-orig/src/truetype/ttinterp.c	2011-10-25 13:17:23.000000000 -0500
++++ freetype-subpixel/src/truetype/ttinterp.c	2011-11-25 21:56:27.003595091 -0600
+@@ -27,13 +27,16 @@
  #include FT_SYSTEM_H
  
  #include "ttinterp.h"
@@ -422,7 +400,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  #define TT_MULFIX           FT_MulFix
  #define TT_MULDIV           FT_MulDiv
  #define TT_MULDIV_NO_ROUND  FT_MulDiv_No_Round
-@@ -149,11 +152,11 @@
+@@ -153,11 +156,11 @@
  #define NORMalize( x, y, v ) \
            Normalize( EXEC_ARG_ x, y, v )
  
@@ -438,7 +416,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
  #define INS_Goto_CodeRange( range, ip ) \
            Ins_Goto_CodeRange( EXEC_ARG_ range, ip )
-@@ -164,8 +167,8 @@
+@@ -168,8 +171,8 @@
  #define CUR_Func_move_orig( z, p, d ) \
            CUR.func_move_orig( EXEC_ARG_ z, p, d )
  
@@ -449,7 +427,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
  #define CUR_Func_read_cvt( index ) \
            CUR.func_read_cvt( EXEC_ARG_ index )
-@@ -245,6 +248,14 @@
+@@ -249,6 +252,14 @@
  #define GUESS_VECTOR( V )
  #endif
  
@@ -464,7 +442,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    /*************************************************************************/
    /*                                                                       */
    /*                        CODERANGE FUNCTIONS                            */
-@@ -1842,16 +1853,26 @@
+@@ -1846,16 +1857,26 @@
      FT_ASSERT( !CUR.face->unpatented_hinting );
  #endif
  
@@ -498,7 +476,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      v = CUR.GS.freeVector.y;
  
-@@ -1928,8 +1949,18 @@
+@@ -1932,8 +1953,18 @@
    {
      FT_UNUSED_EXEC;
  
@@ -519,7 +497,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    }
  
  
-@@ -1990,6 +2021,8 @@
+@@ -1994,6 +2025,8 @@
    /*                                                                       */
    /*    compensation :: The engine compensation.                           */
    /*                                                                       */
@@ -528,7 +506,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    /* <Return>                                                              */
    /*    The compensated distance.                                          */
    /*                                                                       */
-@@ -2001,11 +2034,13 @@
+@@ -2005,11 +2038,13 @@
    /*                                                                       */
    static FT_F26Dot6
    Round_None( EXEC_OP_ FT_F26Dot6  distance,
@@ -543,7 +521,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
  
      if ( distance >= 0 )
-@@ -2020,6 +2055,7 @@
+@@ -2024,6 +2059,7 @@
        if ( val > 0 )
          val = 0;
      }
@@ -551,7 +529,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      return val;
    }
  
-@@ -2037,12 +2073,15 @@
+@@ -2041,12 +2077,15 @@
    /*                                                                       */
    /*    compensation :: The engine compensation.                           */
    /*                                                                       */
@@ -568,7 +546,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    {
      FT_F26Dot6  val;
  
-@@ -2051,15 +2090,15 @@
+@@ -2055,15 +2094,15 @@
  
      if ( distance >= 0 )
      {
@@ -587,7 +565,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
        if ( val > 0 )
          val = 0;
      }
-@@ -2081,12 +2120,15 @@
+@@ -2085,12 +2124,15 @@
    /*                                                                       */
    /*    compensation :: The engine compensation.                           */
    /*                                                                       */
@@ -604,7 +582,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    {
      FT_F26Dot6  val;
  
-@@ -2095,13 +2137,15 @@
+@@ -2099,13 +2141,15 @@
  
      if ( distance >= 0 )
      {
@@ -622,7 +600,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
        if ( val > 0 )
          val = 0;
      }
-@@ -2123,12 +2167,15 @@
+@@ -2127,12 +2171,15 @@
    /*                                                                       */
    /*    compensation :: The engine compensation.                           */
    /*                                                                       */
@@ -639,7 +617,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    {
      FT_F26Dot6  val;
  
-@@ -2139,13 +2186,13 @@
+@@ -2143,13 +2190,13 @@
      {
        val = distance + compensation;
        if ( distance && val > 0 )
@@ -655,7 +633,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
        if ( val > 0 )
          val = 0;
      }
-@@ -2167,12 +2214,15 @@
+@@ -2171,12 +2218,15 @@
    /*                                                                       */
    /*    compensation :: The engine compensation.                           */
    /*                                                                       */
@@ -672,7 +650,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    {
      FT_F26Dot6  val;
  
-@@ -2181,15 +2231,15 @@
+@@ -2185,15 +2235,15 @@
  
      if ( distance >= 0 )
      {
@@ -691,7 +669,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
        if ( val > 0 )
          val = 0;
      }
-@@ -2211,12 +2261,15 @@
+@@ -2215,12 +2265,15 @@
    /*                                                                       */
    /*    compensation :: The engine compensation.                           */
    /*                                                                       */
@@ -708,7 +686,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    {
      FT_F26Dot6 val;
  
-@@ -2225,15 +2278,15 @@
+@@ -2229,15 +2282,15 @@
  
      if ( distance >= 0 )
      {
@@ -727,7 +705,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
        if ( val > 0 )
          val = 0;
      }
-@@ -2255,6 +2308,8 @@
+@@ -2259,6 +2312,8 @@
    /*                                                                       */
    /*    compensation :: The engine compensation.                           */
    /*                                                                       */
@@ -736,7 +714,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    /* <Return>                                                              */
    /*    Rounded distance.                                                  */
    /*                                                                       */
-@@ -2266,10 +2321,13 @@
+@@ -2270,10 +2325,13 @@
    /*                                                                       */
    static FT_F26Dot6
    Round_Super( EXEC_OP_ FT_F26Dot6  distance,
@@ -751,7 +729,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      if ( distance >= 0 )
      {
-@@ -2305,6 +2363,8 @@
+@@ -2309,6 +2367,8 @@
    /*                                                                       */
    /*    compensation :: The engine compensation.                           */
    /*                                                                       */
@@ -760,7 +738,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    /* <Return>                                                              */
    /*    Rounded distance.                                                  */
    /*                                                                       */
-@@ -2314,10 +2374,13 @@
+@@ -2318,10 +2378,13 @@
    /*                                                                       */
    static FT_F26Dot6
    Round_Super_45( EXEC_OP_ FT_F26Dot6  distance,
@@ -775,7 +753,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      if ( distance >= 0 )
      {
-@@ -2400,32 +2463,38 @@
+@@ -2404,32 +2467,38 @@
    /*    Sets Super Round parameters.                                       */
    /*                                                                       */
    /* <Input>                                                               */
@@ -830,7 +808,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      }
  
      switch ( (FT_Int)( selector & 0x30 ) )
-@@ -3065,13 +3134,13 @@
+@@ -3080,13 +3149,13 @@
  
  
  #define DO_SROUND                                \
@@ -846,7 +824,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      CUR.GS.round_state = TT_Round_Super_45;         \
      CUR.func_round = (TT_Round_Func)Round_Super_45;
  
-@@ -3241,12 +3310,12 @@
+@@ -3256,12 +3325,12 @@
      args[0] = ( args[0] != args[1] );
  
  
@@ -863,7 +841,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
  
  #define DO_AND                        \
-@@ -3295,6 +3364,35 @@
+@@ -3310,6 +3379,35 @@
  #define DO_CEILING                    \
      args[0] = FT_PIX_CEIL( args[0] );
  
@@ -899,7 +877,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
  #define DO_RS                           \
     {                                    \
-@@ -3304,9 +3402,7 @@
+@@ -3319,9 +3417,7 @@
       if ( BOUNDSL( I, CUR.storeSize ) ) \
       {                                  \
         if ( CUR.pedantic_hinting )      \
@@ -909,7 +887,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
         else                             \
           args[0] = 0;                   \
       }                                  \
-@@ -3314,6 +3410,8 @@
+@@ -3329,6 +3425,8 @@
         args[0] = CUR.storage[I];        \
     }
  
@@ -918,7 +896,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
  #define DO_WS                           \
     {                                    \
-@@ -3323,9 +3421,7 @@
+@@ -3338,9 +3436,7 @@
       if ( BOUNDSL( I, CUR.storeSize ) ) \
       {                                  \
         if ( CUR.pedantic_hinting )      \
@@ -928,7 +906,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
       }                                  \
       else                               \
         CUR.storage[I] = args[1];        \
-@@ -3340,9 +3436,7 @@
+@@ -3355,9 +3451,7 @@
       if ( BOUNDSL( I, CUR.cvtSize ) )    \
       {                                   \
         if ( CUR.pedantic_hinting )       \
@@ -938,7 +916,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
         else                              \
           args[0] = 0;                    \
       }                                   \
-@@ -3359,9 +3453,7 @@
+@@ -3374,9 +3468,7 @@
       if ( BOUNDSL( I, CUR.cvtSize ) )    \
       {                                   \
         if ( CUR.pedantic_hinting )       \
@@ -948,7 +926,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
       }                                   \
       else                                \
         CUR_Func_write_cvt( I, args[1] ); \
-@@ -3376,9 +3468,7 @@
+@@ -3391,9 +3483,7 @@
       if ( BOUNDSL( I, CUR.cvtSize ) )                           \
       {                                                          \
         if ( CUR.pedantic_hinting )                              \
@@ -958,7 +936,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
       }                                                          \
       else                                                       \
         CUR.cvt[I] = TT_MULFIX( args[1], CUR.tt_metrics.scale ); \
-@@ -3389,15 +3479,17 @@
+@@ -3404,15 +3494,17 @@
      CUR.error = TT_Err_Debug_OpCode;
  
  
@@ -983,7 +961,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
  
  #define DO_MAX               \
-@@ -3415,10 +3507,11 @@
+@@ -3430,10 +3522,11 @@
  
  #undef  ARRAY_BOUND_ERROR
  #define ARRAY_BOUND_ERROR                   \
@@ -996,7 +974,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
  
    /*************************************************************************/
-@@ -4571,6 +4664,23 @@
+@@ -4586,6 +4679,23 @@
      TT_DefRecord*  rec;
      TT_DefRecord*  limit;
  
@@ -1020,7 +998,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      /* some font programs are broken enough to redefine functions! */
      /* We will then parse the current table.                       */
-@@ -4604,10 +4714,11 @@
+@@ -4619,10 +4729,11 @@
        return;
      }
  
@@ -1036,7 +1014,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      if ( n > CUR.maxFunc )
        CUR.maxFunc = (FT_UInt16)n;
-@@ -4617,6 +4728,89 @@
+@@ -4632,6 +4743,90 @@
  
      while ( SKIP_Code() == SUCCESS )
      {
@@ -1046,6 +1024,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
 +
 +#ifdef TT_CONFIG_OPTION_SUBPIXEL_HINTING
 +
++      if (CUR.enhanced)
 +      for ( i = 0; i < opcode_patterns; i++ )
 +      {
 +        if ( CUR.opcode == opcode_pattern[i][opcode_pointer[i]] )
@@ -1126,7 +1105,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
        switch ( CUR.opcode )
        {
        case 0x89:    /* IDEF */
-@@ -4659,6 +4853,14 @@
+@@ -4674,6 +4869,15 @@
  
      CUR.step_ins = FALSE;
  
@@ -1135,13 +1114,14 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
 +     *  CUR.enhanced may be turned off prior to function calls.  This
 +     *  ensures it is turned back on.
 +     */
-+    CUR.enhanced = CUR.subpixel_hinting || CUR.grayscale_hinting;
++    CUR.enhanced = ( CUR.subpixel_hinting || CUR.grayscale_hinting ) 
++      && !( CUR.sph_tweak_flags & SPH_TWEAK_PIXEL_HINTING );
 +#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING */
 +
      if ( pRec->Cur_Count > 0 )
      {
        CUR.callTop++;
-@@ -4692,6 +4894,10 @@
+@@ -4707,6 +4911,10 @@
      TT_CallRec*    pCrec;
      TT_DefRecord*  def;
  
@@ -1152,7 +1132,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      /* first of all, check the index */
  
-@@ -4729,6 +4935,24 @@
+@@ -4744,6 +4952,24 @@
      if ( !def->active )
        goto Fail;
  
@@ -1168,7 +1148,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
 +#ifdef SPH_DEBUG
 +    if ( F == 35 || F == 34 )
 +    {
-+      CUR.enhanced = 0;
++      CUR.enhanced = FALSE;
 +      printf("Entering %d\n", F);
 +    }
 +#endif
@@ -1177,7 +1157,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      /* check the call stack */
      if ( CUR.callTop >= CUR.callSize )
      {
-@@ -4749,6 +4973,16 @@
+@@ -4764,6 +4990,16 @@
                          def->start );
  
      CUR.step_ins = FALSE;
@@ -1186,7 +1166,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
 +#ifdef SPH_DEBUG
 +    if ( F == 35 || F == 34 )
 +    {
-+      CUR.enhanced = 1;
++      CUR.enhanced = !( CUR.sph_tweak_flags & SPH_TWEAK_PIXEL_HINTING );
 +      printf("Leaving %d\n", F);
 +    }
 +#endif
@@ -1194,7 +1174,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      return;
  
    Fail:
-@@ -4769,6 +5003,10 @@
+@@ -4784,6 +5020,10 @@
      TT_CallRec*    pCrec;
      TT_DefRecord*  def;
  
@@ -1205,7 +1185,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      /* first of all, check the index */
      F = args[1];
-@@ -4805,6 +5043,15 @@
+@@ -4820,6 +5060,15 @@
      if ( !def->active )
        goto Fail;
  
@@ -1221,7 +1201,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      /* check stack */
      if ( CUR.callTop >= CUR.callSize )
      {
-@@ -4827,6 +5074,11 @@
+@@ -4842,6 +5091,11 @@
  
        CUR.step_ins = FALSE;
      }
@@ -1233,7 +1213,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      return;
  
    Fail:
-@@ -5163,6 +5415,12 @@
+@@ -5191,6 +5445,12 @@
        }
      }
  
@@ -1246,7 +1226,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      args[0] = D;
    }
  
-@@ -5645,12 +5903,21 @@
+@@ -5685,12 +5945,21 @@
      }
  #endif
  
@@ -1272,7 +1252,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      if ( CUR.GS.freeVector.y != 0 )
      {
-@@ -5841,6 +6108,9 @@
+@@ -5879,6 +6148,9 @@
    {
      FT_F26Dot6  dx, dy;
      FT_UShort   point;
@@ -1282,7 +1262,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
  
      if ( CUR.top < CUR.GS.loop + 1 )
-@@ -5886,11 +6156,81 @@
+@@ -5924,11 +6196,88 @@
          }
        }
        else
@@ -1311,6 +1291,13 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
 +        {
 +          B1 = CUR.zp2.cur[point].y;
 +
++          if ( CUR.enhanced                                                   &&
++              ( CUR.sph_tweak_flags & SPH_TWEAK_ROUND_NONPIXEL_INLINE_MOVES ) )
++          {
++            dx = FT_PIX_ROUND ( dx );                
++            dy = FT_PIX_ROUND ( dy );               
++          }
++          
 +          if ( CUR.is_composite                                 ||
 +               ( CUR.sph_tweak_flags &
 +                   SPH_TWEAK_DO_SHPIX )                         ||
@@ -1365,7 +1352,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    Fail:
      CUR.GS.loop = 1;
      CUR.new_top = CUR.args;
-@@ -5908,7 +6248,18 @@
+@@ -5946,7 +6295,18 @@
    {
      FT_UShort   point;
      FT_F26Dot6  distance;
@@ -1384,7 +1371,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      point = (FT_UShort)args[0];
  
-@@ -5932,6 +6283,16 @@
+@@ -5970,6 +6330,16 @@
      distance = CUR_Func_project( CUR.zp1.cur + point,
                                   CUR.zp0.cur + CUR.GS.rp0 );
  
@@ -1401,12 +1388,12 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      CUR_Func_move( &CUR.zp1, point, args[1] - distance );
  
      CUR.GS.rp1 = CUR.GS.rp0;
-@@ -5954,7 +6315,21 @@
+@@ -5992,8 +6362,22 @@
      FT_UShort   point;
      FT_F26Dot6  cur_dist,
                  distance;
 +    FT_Int      resolution = 1;
-+
+ 
  
 +#ifdef TT_CONFIG_OPTION_SUBPIXEL_HINTING
 +    if ( CUR.enhanced )
@@ -1420,10 +1407,11 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
 +        resolution = SPH_OPTION_GRIDS_PER_PIXEL_Y;
 +    }
 +#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING */
- 
++
      point = (FT_UShort)args[0];
  
-@@ -5971,7 +6346,8 @@
+     if ( BOUNDS( point, CUR.zp0.n_points ) )
+@@ -6007,7 +6391,8 @@
      {
        cur_dist = CUR_fast_project( &CUR.zp0.cur[point] );
        distance = CUR_Func_round( cur_dist,
@@ -1433,7 +1421,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      }
      else
        distance = 0;
-@@ -5996,7 +6372,21 @@
+@@ -6032,7 +6417,21 @@
      FT_UShort   point;
      FT_F26Dot6  distance,
                  org_dist;
@@ -1455,7 +1443,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      cvtEntry = (FT_ULong)args[1];
      point    = (FT_UShort)args[0];
-@@ -6042,12 +6432,15 @@
+@@ -6078,12 +6477,15 @@
  
      org_dist = CUR_fast_project( &CUR.zp0.cur[point] );
  
@@ -1474,7 +1462,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      }
  
      CUR_Func_move( &CUR.zp0, point, distance - org_dist );
-@@ -6069,6 +6462,24 @@
+@@ -6105,6 +6507,24 @@
    {
      FT_UShort   point;
      FT_F26Dot6  org_dist, distance;
@@ -1499,7 +1487,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
  
      point = (FT_UShort)args[0];
-@@ -6134,11 +6545,13 @@
+@@ -6170,11 +6590,13 @@
      if ( ( CUR.opcode & 4 ) != 0 )
        distance = CUR_Func_round(
                     org_dist,
@@ -1515,7 +1503,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      /* minimum distance flag */
  
-@@ -6146,13 +6559,17 @@
+@@ -6182,13 +6604,17 @@
      {
        if ( org_dist >= 0 )
        {
@@ -1537,7 +1525,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
        }
      }
  
-@@ -6189,10 +6606,36 @@
+@@ -6225,10 +6651,36 @@
                  cur_dist,
                  org_dist;
  
@@ -1574,7 +1562,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      /* XXX: UNDOCUMENTED! cvt[-1] = 0 always */
  
      if ( BOUNDS( point,      CUR.zp1.n_points ) ||
-@@ -6248,7 +6691,7 @@
+@@ -6282,7 +6734,7 @@
          cvt_dist = -cvt_dist;
      }
  
@@ -1583,7 +1571,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      if ( ( CUR.opcode & 4 ) != 0 )
      {
-@@ -6269,18 +6712,21 @@
+@@ -6303,18 +6755,21 @@
          /*      `ttinst2.doc', version 1.66, is thus incorrect since  */
          /*      it implies `>=' instead of `>'.                       */
  
@@ -1608,7 +1596,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
  
      /* minimum distance test */
  
-@@ -6288,18 +6734,39 @@
+@@ -6322,18 +6777,44 @@
      {
        if ( org_dist >= 0 )
        {
@@ -1629,9 +1617,14 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
 +                                 CUR.GS.minimum_distance, 64 );
        }
      }
- 
++    
++#ifdef TT_CONFIG_OPTION_SUBPIXEL_HINTING
++    if ( CUR.enhanced                                                   &&
++         ( CUR.sph_tweak_flags & SPH_TWEAK_ROUND_NONPIXEL_INLINE_MOVES ) )
++      distance = FT_PIX_ROUND( distance );   
++#endif
 +    B1 = CUR.zp1.cur[point].y;
-+
+ 
      CUR_Func_move( &CUR.zp1, point, distance - cur_dist );
  
 +#ifdef TT_CONFIG_OPTION_SUBPIXEL_HINTING
@@ -1652,7 +1645,24 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
    Fail:
      CUR.GS.rp1 = CUR.GS.rp0;
  
-@@ -6796,6 +7263,15 @@
+@@ -6357,8 +6838,14 @@
+     FT_F26Dot6  distance;
+ 
+     FT_UNUSED_ARG;
+-
+-
++#ifdef TT_CONFIG_OPTION_SUBPIXEL_HINTING
++    if ( CUR.enhanced && CUR.iup_called                                &&
++         ( CUR.sph_tweak_flags & SPH_TWEAK_NO_ALIGNRP_AFTER_IUP ) )
++    {
++      CUR.error = TT_Err_Invalid_Reference;      
++      goto Fail;
++    }
++#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING */
+     if ( CUR.top < CUR.GS.loop ||
+          BOUNDS( CUR.GS.rp0, CUR.zp0.n_points ) )
+     {
+@@ -6829,6 +7316,15 @@
      contour = 0;
      point   = 0;
  
@@ -1668,27 +1678,27 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      do
      {
        end_point   = CUR.pts.contours[contour] - CUR.pts.first_point;
-@@ -6865,7 +7341,19 @@
+@@ -6898,7 +7394,19 @@
      FT_UShort  A;
      FT_ULong   C;
      FT_Long    B;
 +#ifdef TT_CONFIG_OPTION_SUBPIXEL_HINTING
-+    FT_Int     resolution = 1;
++    /*FT_Int     resolution = 1;*/
 +    FT_UShort  B1, B2;
 +
  
-+    if (CUR.enhanced )
++    /*if (CUR.enhanced )
 +    {
 +      if ( CUR.GS.freeVector.x != 0 )
 +        resolution = SPH_OPTION_GRIDS_PER_PIXEL_X;
 +      else if ( CUR.GS.freeVector.y != 0 )
 +        resolution = SPH_OPTION_GRIDS_PER_PIXEL_Y;
-+    }
++    }*/
 +#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING */
  
  #ifdef TT_CONFIG_OPTION_UNPATENTED_HINTING
      /* Delta hinting is covered by US Patent 5159668. */
-@@ -6938,7 +7426,89 @@
+@@ -6971,7 +7479,93 @@
              B++;
            B = B * 64 / ( 1L << CUR.GS.delta_shift );
  
@@ -1744,6 +1754,10 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
 +            /* save the y value of the point now; compare after move */
 +            B1 = CUR.zp0.cur[A].y;
 +
++            if ( CUR.enhanced                                                   &&
++                ( CUR.sph_tweak_flags & SPH_TWEAK_ROUND_NONPIXEL_INLINE_MOVES ) )
++              B = FT_PIX_ROUND( B );             
++                  
 +            /*
 +             *  Allow delta move if using enhanced rendering, IUP has not
 +             *  been called, and point is touched on X or Y.
@@ -1778,7 +1792,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
          }
        }
        else
-@@ -7068,22 +7638,107 @@
+@@ -7101,22 +7695,107 @@
  
      K = 0;
  
@@ -1892,49 +1906,59 @@ diff -Nur freetype-orig/src/truetype/ttinterp.c freetype-subpixel/src/truetype/t
      args[0] = K;
    }
  
-@@ -7458,6 +8113,13 @@
+@@ -7491,6 +8170,18 @@
      cur = *exc;
  #endif
  
 +#ifdef TT_CONFIG_OPTION_SUBPIXEL_HINTING
-+    /* ensure some variables are set for this run */
-+    CUR.iup_called  = FALSE;
-+    CUR.iupy_called = FALSE;
-+    CUR.infunc      = FALSE;
++    if (CUR.enhanced)
++    {
++      /* ensure some variables are set for this run */
++      CUR.iup_called  = FALSE;
++      CUR.iupy_called = FALSE;
++      CUR.infunc      = FALSE;
++
++      /*if ( CUR.sph_tweak_flags & SPH_TWEAK_DONT_HINT ) return TT_Err_Ok;*/
++    }
 +#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING */
 +
      /* set CVT functions */
      CUR.tt_metrics.ratio = 0;
      if ( CUR.metrics.x_ppem != CUR.metrics.y_ppem )
-@@ -7747,8 +8409,16 @@
+@@ -7762,7 +8453,12 @@
+           break;
+ 
+         case 0x2B:  /* CALL */
+-          Ins_CALL( EXEC_ARG_ args );
++#ifdef TT_CONFIG_OPTION_SUBPIXEL_HINTING          
++        if ( !CUR.enhanced 
++          || !CUR.iup_called                                
++          || !( CUR.sph_tweak_flags & SPH_TWEAK_NO_CALL_AFTER_IUP ) )
++#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING */          
++            Ins_CALL( EXEC_ARG_ args );
+           break;
+ 
+         case 0x2C:  /* FDEF */
+@@ -7780,8 +8476,16 @@
  
  
          case 0x30:  /* IUP */
 +          Ins_IUP( EXEC_ARG_ args );
 +#ifdef TT_CONFIG_OPTION_SUBPIXEL_HINTING
-+          CUR.iup_called = TRUE;
++          if (CUR.enhanced) CUR.iup_called = TRUE;
 +#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING */
 +          break;
          case 0x31:  /* IUP */
            Ins_IUP( EXEC_ARG_ args );
 +#ifdef TT_CONFIG_OPTION_SUBPIXEL_HINTING
-+          CUR.iupy_called = TRUE;
++          if (CUR.enhanced) CUR.iupy_called = TRUE;
 +#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING*/
            break;
  
          case 0x32:  /* SHP */
 diff -Nur freetype-orig/src/truetype/ttinterp.h freetype-subpixel/src/truetype/ttinterp.h
---- freetype-orig/src/truetype/ttinterp.h	2011-04-29 18:14:22.785920701 -0500
-+++ freetype-subpixel/src/truetype/ttinterp.h	2011-04-29 18:26:58.236162608 -0500
-@@ -4,7 +4,7 @@
- /*                                                                         */
- /*    TrueType bytecode interpreter (specification).                       */
- /*                                                                         */
--/*  Copyright 1996-2001, 2002, 2003, 2004, 2005, 2006, 2007, 2010 by       */
-+/*  Copyright 1996-2007, 2010-2011 by                                      */
- /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
- /*                                                                         */
- /*  This file is part of the FreeType project, and may only be used,       */
+--- freetype-orig/src/truetype/ttinterp.h	2010-08-05 16:56:05.000000000 -0500
++++ freetype-subpixel/src/truetype/ttinterp.h	2011-11-17 20:59:44.159885439 -0600
 @@ -68,7 +68,8 @@
    /* Rounding function */
    typedef FT_F26Dot6
@@ -1945,7 +1969,7 @@ diff -Nur freetype-orig/src/truetype/ttinterp.h freetype-subpixel/src/truetype/t
  
    /* Point displacement along the freedom vector routine */
    typedef void
-@@ -106,6 +107,26 @@
+@@ -106,6 +107,43 @@
    } TT_CallRec, *TT_CallStack;
  
  
@@ -1966,25 +1990,30 @@ diff -Nur freetype-orig/src/truetype/ttinterp.h freetype-subpixel/src/truetype/t
 +
 +  } SPH_TweakRule;
 +
++  
++  typedef struct  SPH_ScaleRule_
++  {
++    const char  family[32];
++    const int   ppem;
++    const char  style[32];
++    const char  glyph;
++    const float scale;
++  } SPH_ScaleRule;  
++  
++  
++  typedef struct  Font_Class_
++  {
++    const char  name[32];
++    const char  family[7][32];
++  } Font_Class;    
++  
 +#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING */
 +
 +
    /*************************************************************************/
    /*                                                                       */
    /* The main structure for the interpreter which collects all necessary   */
-@@ -206,9 +227,9 @@
- 
-     TT_Project_Func    func_project,   /* current projection function */
-                        func_dualproj,  /* current dual proj. function */
--                       func_freeProj;  /* current freedom proj. func  */
-+                       func_freeProj;  /* current freedom proj. func. */
- 
--    TT_Move_Func       func_move;      /* current point move function */
-+    TT_Move_Func       func_move;      /* current point move function     */
-     TT_Move_Func       func_move_orig; /* move original position function */
- 
-     TT_Get_CVT_Func    func_read_cvt;  /* read a cvt entry              */
-@@ -217,6 +238,32 @@
+@@ -217,6 +255,32 @@
  
      FT_Bool            grayscale;      /* are we hinting for grayscale? */
  
@@ -2018,8 +2047,8 @@ diff -Nur freetype-orig/src/truetype/ttinterp.h freetype-subpixel/src/truetype/t
  
  
 diff -Nur freetype-orig/src/truetype/ttobjs.h freetype-subpixel/src/truetype/ttobjs.h
---- freetype-orig/src/truetype/ttobjs.h	2011-04-29 18:14:22.786920759 -0500
-+++ freetype-subpixel/src/truetype/ttobjs.h	2011-04-29 18:26:58.237162665 -0500
+--- freetype-orig/src/truetype/ttobjs.h	2011-01-31 23:51:20.000000000 -0600
++++ freetype-subpixel/src/truetype/ttobjs.h	2011-11-17 20:59:44.159885439 -0600
 @@ -173,10 +173,11 @@
    /*                                                                       */
    typedef struct  TT_DefRecord_
@@ -2047,8 +2076,8 @@ diff -Nur freetype-orig/src/truetype/ttobjs.h freetype-subpixel/src/truetype/tto
  
 diff -Nur freetype-orig/src/truetype/ttsubpix.c freetype-subpixel/src/truetype/ttsubpix.c
 --- freetype-orig/src/truetype/ttsubpix.c	1969-12-31 18:00:00.000000000 -0600
-+++ freetype-subpixel/src/truetype/ttsubpix.c	2011-04-29 18:26:58.238162722 -0500
-@@ -0,0 +1,129 @@
++++ freetype-subpixel/src/truetype/ttsubpix.c	2011-11-25 21:56:37.778226747 -0600
+@@ -0,0 +1,147 @@
 +/***************************************************************************/
 +/*                                                                         */
 +/*  ttsubpix.c                                                             */
@@ -2135,10 +2164,24 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.c freetype-subpixel/src/truetype/t
 +    int         ppem   = loader->size->metrics.x_ppem;
 +    FT_String*  style  = face->root.style_name;
 +
++    /* Don't apply rules if style isn't set */
++    if ( !face->root.style_name ) return;
 +
 +    /* loader->exec->sph_tweak_flags = 0; */
 +
 +    /* printf( "%s,%d,%s,%c ", family, ppem, style, glyph_index ); */
++    TWEAK_RULES( PIXEL_HINTING );
++    
++    if ( loader->exec->sph_tweak_flags & SPH_TWEAK_PIXEL_HINTING )
++    {
++      loader->exec->enhanced = FALSE;
++      return;
++    }
++    
++    TWEAK_RULES( NO_ALIGNRP_AFTER_IUP );
++    TWEAK_RULES( NO_CALL_AFTER_IUP );    
++    TWEAK_RULES( DEEMBOLDEN );
++    TWEAK_RULES( EMBOLDEN );
 +
 +    TWEAK_RULES( NORMAL_ROUND_MIRP );
 +    TWEAK_RULES( NORMAL_ROUND_MDRP );
@@ -2168,7 +2211,11 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.c freetype-subpixel/src/truetype/t
 +    TWEAK_RULES( DO_SHPIX );
 +
 +    TWEAK_RULES( SKIP_NONPIXEL_INLINE_MOVES );
++    TWEAK_RULES_EXCEPTIONS( SKIP_NONPIXEL_INLINE_MOVES );    
 +
++    TWEAK_RULES( ROUND_NONPIXEL_INLINE_MOVES );    
++    TWEAK_RULES_EXCEPTIONS( ROUND_NONPIXEL_INLINE_MOVES );   
++    
 +    TWEAK_RULES( SHPIX_CLASS_A );
 +    TWEAK_RULES_EXCEPTIONS( SHPIX_CLASS_A );
 +  }
@@ -2180,8 +2227,8 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.c freetype-subpixel/src/truetype/t
 +/* END */
 diff -Nur freetype-orig/src/truetype/ttsubpix.h freetype-subpixel/src/truetype/ttsubpix.h
 --- freetype-orig/src/truetype/ttsubpix.h	1969-12-31 18:00:00.000000000 -0600
-+++ freetype-subpixel/src/truetype/ttsubpix.h	2011-04-29 18:26:58.241162893 -0500
-@@ -0,0 +1,912 @@
++++ freetype-subpixel/src/truetype/ttsubpix.h	2011-11-25 21:56:48.745851795 -0600
+@@ -0,0 +1,894 @@
 +/***************************************************************************/
 +/*                                                                         */
 +/*  ttsubpix.h                                                             */
@@ -2213,24 +2260,30 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.h freetype-subpixel/src/truetype/t
 +  /* Tweak flags that are set for each glyph                               */
 +  /*                                                                       */
 +  /*                                                                       */
-+#define SPH_TWEAK_NORMAL_ROUND_MIRP           0x00001
-+#define SPH_TWEAK_NORMAL_ROUND_MDRP           0x00002
-+#define SPH_TWEAK_DELTAP_RDTG                 0x00004
-+#define SPH_TWEAK_DELTAP_RTG                  0x00008
-+#define SPH_TWEAK_DELTAP_RUTG                 0x00010
-+#define SPH_TWEAK_ALLOW_DMOVEX_FREEV          0x00020
-+#define SPH_TWEAK_ALLOW_DMOVE_FREEV           0x00040
-+#define SPH_TWEAK_ALLOW_MOVEZP2_FREEV         0x00080
-+#define SPH_TWEAK_ALWAYS_SKIP_DELTAP          0x00100
-+#define SPH_TWEAK_SKIP_IUP                    0x00200
-+#define SPH_TWEAK_NORMAL_ROUND_MIAP           0x00400
-+#define SPH_TWEAK_NORMAL_ROUND_MDAP           0x00800
-+#define SPH_TWEAK_DO_RS                       0x01000
-+#define SPH_TWEAK_DO_SHPIX                    0x02000
-+#define SPH_TWEAK_ALWAYS_DO_DELTAP            0x04000
-+#define SPH_TWEAK_SKIP_NONPIXEL_INLINE_MOVES  0x08000
-+#define SPH_TWEAK_SHPIX_CLASS_A               0x10000
-+#define SPH_TWEAK_RASTERIZER_35               0x20000
++#define SPH_TWEAK_NORMAL_ROUND_MIRP           0x0000001
++#define SPH_TWEAK_NORMAL_ROUND_MDRP           0x0000002
++#define SPH_TWEAK_DELTAP_RDTG                 0x0000004
++#define SPH_TWEAK_DELTAP_RTG                  0x0000008
++#define SPH_TWEAK_DELTAP_RUTG                 0x0000010
++#define SPH_TWEAK_ALLOW_DMOVEX_FREEV          0x0000020
++#define SPH_TWEAK_ALLOW_DMOVE_FREEV           0x0000040
++#define SPH_TWEAK_ALLOW_MOVEZP2_FREEV         0x0000080
++#define SPH_TWEAK_ALWAYS_SKIP_DELTAP          0x0000100
++#define SPH_TWEAK_SKIP_IUP                    0x0000200
++#define SPH_TWEAK_NORMAL_ROUND_MIAP           0x0000400
++#define SPH_TWEAK_NORMAL_ROUND_MDAP           0x0000800
++#define SPH_TWEAK_DO_RS                       0x0001000
++#define SPH_TWEAK_DO_SHPIX                    0x0002000
++#define SPH_TWEAK_ALWAYS_DO_DELTAP            0x0004000
++#define SPH_TWEAK_SKIP_NONPIXEL_INLINE_MOVES  0x0008000
++#define SPH_TWEAK_SHPIX_CLASS_A               0x0010000
++#define SPH_TWEAK_RASTERIZER_35               0x0020000
++#define SPH_TWEAK_PIXEL_HINTING               0x0040000
++#define SPH_TWEAK_NO_ALIGNRP_AFTER_IUP        0x0080000
++#define SPH_TWEAK_DEEMBOLDEN                  0x0100000
++#define SPH_TWEAK_EMBOLDEN                    0x0200000
++#define SPH_TWEAK_ROUND_NONPIXEL_INLINE_MOVES 0x0400000
++#define SPH_TWEAK_NO_CALL_AFTER_IUP           0x0800000
 +
 +
 +  FT_LOCAL( FT_Bool )
@@ -2684,6 +2737,23 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.h freetype-subpixel/src/truetype/t
 +#define SPH_OPTION_GRIDS_PER_PIXEL_X       64
 +#define SPH_OPTION_GRIDS_PER_PIXEL_Y       1
 +
++  /* don't do subpixel hinting; do normal hinting */
++#define PIXEL_HINTING_RULES_SIZE  9
++  SPH_TweakRule  PIXEL_HINTING_Rules
++                   [PIXEL_HINTING_RULES_SIZE] =
++                 {
++                   { "-", 0, "", 0 },
++                   { "Courier New", 0, "", '<' },
++                   { "Courier New", 0, "", '>' },
++                   { "Verdana", 0, "", '<' },
++                   { "Verdana", 0, "", '>' },       
++                   { "Trebuchet MS", 0, "Regular", '<' },
++                   { "Trebuchet MS", 0, "Regular", '>' },
++                   { "Tahoma", 0, "Bold", '<' },
++                   { "Tahoma", 0, "Bold", '>' },                     
++                
++                 };
++
 +
 +  /* don't avoid RS Rules (as the basic subpixel hinting does) */
 +#define DO_RS_RULES_SIZE  1
@@ -2704,18 +2774,11 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.h freetype-subpixel/src/truetype/t
 +  /*                                                                    */
 +  /*   CUR.face->header.Flags & 0x10000                                 */
 +
-+#define DO_SHPIX_RULES_SIZE  7
++#define DO_SHPIX_RULES_SIZE  1
 +  SPH_TweakRule  DO_SHPIX_Rules
 +                   [DO_SHPIX_RULES_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "-Verdana", 0, "Regular", 0 },
-+                   { "-Verdana", 12, "Regular", 0 },
 +                   { "Verdana", 13, "Regular", 0 },
-+                   /* aligns to pixels nicely, but messes up some glyphs */
-+                   { "-Times New Roman", 0, "Regular", 0 },
-+                   { "+++Segoe UI", 0, "Regular", 0 },
-+                   { "-Segoe UI", 0, "Semibold", 0 },
 +                 };
 +
 +  /* indicates that SHPIX needs to match a touched point on x OR y */
@@ -2729,110 +2792,108 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.h freetype-subpixel/src/truetype/t
 +  /* mystery rules that make SHPIX work on certain fonts/glyphs;       */
 +  /* indicates that SHPIX needs to match a touched point on x AND y -- */
 +  /* this is dirty and needs to be generalized and incorporated        */
-+#define SHPIX_CLASS_A_RULES_EXCEPTIONS_SIZE  2
++#define SHPIX_CLASS_A_RULES_EXCEPTIONS_SIZE  10
 +  SPH_TweakRule  SHPIX_CLASS_A_Rules_Exceptions
 +                   [SHPIX_CLASS_A_RULES_EXCEPTIONS_SIZE] =
 +                 {
-+                   { "---", 0, "", 0 },
 +                   { "Arial", 11, "Regular", 's' },
++                   { "Consolas", 0, "", 'v' },
++                   { "Consolas", 0, "", 'w' },
++                   { "Consolas", 0, "", 'x' },
++                   { "Consolas", 0, "", 'y' },
++                   { "Consolas", 0, "", 'z' },
++                   { "Consolas", 0, "", 'V' },
++                   { "Consolas", 0, "", 'Z' },
++                   { "Consolas", 0, "", 'X' },
++                   { "Consolas", 0, "", 'W' },
 +                 };
 +
-+  /* skip moves that don't align to a pixel in various functions;   */
++  /* skip moves that don't move a point to a pixel boundary in various functions;   */
 +  /* this fixes Tahoma, Trebuchet oddities and some issues with `$' */
 +#define SKIP_NONPIXEL_INLINE_MOVES_RULES_SIZE  4
 +  SPH_TweakRule  SKIP_NONPIXEL_INLINE_MOVES_Rules
 +                   [SKIP_NONPIXEL_INLINE_MOVES_RULES_SIZE] =
 +                 {
 +                   { "", 0, "Regular", 0 },
++                   { "Courier New", 0, "Bold", 'w' },
++                   { "DejaVu Sans", 0, "Book", 'N' },
++                   { "Bitstream Vera Sans", 0, "Roman", 'N' },                   
 +                   /* keeps the weight in the center of the N */
-+                   { "", 0, "Regular", 'N' },
-+                   { "Tahoma", 0, "Regular", 0 },
-+                   { "==Trebuchet MS", 0, "Regular", 0 },
++                   /*{ "", 0, "Regular", 'N' },
++                   { "Tahoma", 0, "Regular", 0 },*/
 +                 };
 +
++
++#define SKIP_NONPIXEL_INLINE_MOVES_RULES_EXCEPTIONS_SIZE  5
++  SPH_TweakRule  SKIP_NONPIXEL_INLINE_MOVES_Rules_Exceptions
++                   [SKIP_NONPIXEL_INLINE_MOVES_RULES_EXCEPTIONS_SIZE] =
++                 {
++                   { "Droid Serif", 0, "", 0 },
++                   { "Droid Sans", 0, "Bold", 0 },
++                   { "Droid Sans Mono", 0, "Bold", 0 },
++                   { "Droid Sans", 0, "Bold Italic", 0 },
++                   { "Droid Sans Mono", 0, "Bold Italic", 0 },                   
++                 };                 
++                 
++
++  /* round moves that don't move a point to a pixel boundary in various functions;   */
++#define ROUND_NONPIXEL_INLINE_MOVES_RULES_SIZE  3
++  SPH_TweakRule  ROUND_NONPIXEL_INLINE_MOVES_Rules
++                   [ROUND_NONPIXEL_INLINE_MOVES_RULES_SIZE] =
++                 {
++                   { "-", 0, "Regular", 0 },                   
++                   { "Droid Sans", 0, "", 0 },
++                   { "Droid Sans Mono", 0, "", 0 },                 
++                 };               
++  
++#define ROUND_NONPIXEL_INLINE_MOVES_RULES_EXCEPTIONS_SIZE  4
++  SPH_TweakRule  ROUND_NONPIXEL_INLINE_MOVES_Rules_Exceptions
++                   [ROUND_NONPIXEL_INLINE_MOVES_RULES_EXCEPTIONS_SIZE] =
++                 {
++                   { "Droid Sans", 12, "Bold", 0 },
++                   { "Droid Sans", 13, "Bold", 0 },
++                   { "Droid Sans", 16, "Bold", 0 },                   
++                   { "-Droid Sans", 0, "Bold Italic", 0 },
++                 };                     
++                 
 +
 +  /********** MOVE RULES *************/
 +
 +  /* allow a Direct_Move_X along X freedom vector if matched */
-+#define ALLOW_DMOVEX_FREEV_RULES_SIZE  20
++#define ALLOW_DMOVEX_FREEV_RULES_SIZE  4
 +  SPH_TweakRule  ALLOW_DMOVEX_FREEV_Rules
 +                   [ALLOW_DMOVEX_FREEV_RULES_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "-", 0, "Regular", 0 },
-+                   { "-", 0, "Italic", 0 },
-+                   { "-", 0, "Regular", 0 },
-+                   { "-Verdana", 12, "Regular", 0 },
-+                   { "-Geneva", 0, "", 0 },
-+                   { "-Courier New", 0, "Regular", 0 },
-+                   { "-Courier New", 0, "", 0 },
-+                   { "-Arial", 0, "Bold", 0 },
-+                   { "Verdana", 13, "Regular", 0 },
-+                   { "-Times New Roman", 0, "Regular", 0 },
++                   { "Arial Narrow", 0, "Regular", 0 },
 +                   { "Arial", 13, "Regular", 0 },
 +                   { "Arial", 14, "Regular", 0 },
-+                   { "-Tahoma", 0, "Regular", 0 },
-+                   { "+++Trebuchet MS", 0, "Regular", 0 },
-+                   { "-Trebuchet MS", 0, "Bold", 0 },
-+                   { "-Segoe UI", 0, "Semibold", 0 },
-+                   { "-Segoe UI", 12, "Regular", 'H' },
-+                   { "Arial Narrow", 0, "Regular", 0 },
-+                   { "+++Andale Mono", 17, "Regular", 0 },
++                   { "Verdana", 13, "Regular", 0 },
 +                 };
 +
 +  /* allow a Direct_Move along X freedom vector if matched */
-+#define ALLOW_DMOVE_FREEV_RULES_SIZE  21
++#define ALLOW_DMOVE_FREEV_RULES_SIZE  4
 +  SPH_TweakRule  ALLOW_DMOVE_FREEV_Rules
 +                   [ALLOW_DMOVE_FREEV_RULES_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "-", 0, "Regular", 0 },
-+                   { "-", 0, "Italic", 0 },
-+                   { "-Verdana", 12, "Regular", 0 },
-+                   { "Verdana", 13, "Regular", 0 },
-+                   { "-Courier New", 0, "Bold", 0 },
-+                   { "-Times New Roman", 0, "Regular", 0 },
++                   { "Arial Narrow", 0, "Regular", 0 },
 +                   { "Arial", 13, "Regular", 0 },
 +                   { "Arial", 14, "Regular", 0 },
-+                   { "-Arial", 0, "Bold", 0 },
-+                   { "-Tahoma", 0, "Regular", 0 },
-+                   { "+++Trebuchet MS", 0, "Regular", 0 },
-+                   { "-Trebuchet MS", 0, "Bold", 0 },
-+                   { "-Geneva", 0, "", 0 },
-+                   { "-------", 0, "Regular", 0 },
-+                   { "-Segoe UI", 0, "Semibold", 0 },
-+                   { "+++Segoe UI", 12, "Regular", 'H' },
-+                   { "-----", 0, "Regular", 0 },
-+                   { "Arial Narrow", 0, "Regular", 0 },
-+                   { "+++Andale Mono", 17, "Regular", 0 },
-+                   { "-Courier New", 0, "", 0 },
++                   { "Verdana", 13, "Regular", 0 },
 +                 };
 +
-+#define ALLOW_DMOVEX_FREEV_RULES_EXCEPTIONS_SIZE  9
++#define ALLOW_DMOVEX_FREEV_RULES_EXCEPTIONS_SIZE  3
 +  SPH_TweakRule  ALLOW_DMOVEX_FREEV_Rules_Exceptions
 +                   [ALLOW_DMOVEX_FREEV_RULES_EXCEPTIONS_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "-Times New Roman", 0, "Regular", 'a' },
-+                   { "-Times New Roman", 0, "Regular", 'q' },
-+                   { "-Times New Roman", 0, "Regular", 'P' },
-+                   { "-Times New Roman", 0, "Regular", 'R' },
-+                   { "-Times New Roman", 0, "Regular", 'B' },
 +                   { "Arial", 0, "Regular", '4' },
 +                   { "Arial", 0, "Regular", 's' },
 +                   { "Arial", 0, "Regular", '^' },
 +                 };
 +
-+#define ALLOW_DMOVE_FREEV_RULES_EXCEPTIONS_SIZE  9
++#define ALLOW_DMOVE_FREEV_RULES_EXCEPTIONS_SIZE  3
 +  SPH_TweakRule  ALLOW_DMOVE_FREEV_Rules_Exceptions
 +                   [ALLOW_DMOVE_FREEV_RULES_EXCEPTIONS_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "-Times New Roman", 0, "Regular", 'a' },
-+                   { "-Times New Roman", 0, "Regular", 'q' },
-+                   { "-Times New Roman", 0, "Regular", 'P' },
-+                   { "-Times New Roman", 0, "Regular", 'R' },
-+                   { "-Times New Roman", 0, "Regular", 'B' },
 +                   { "Arial", 0, "Regular", '4' },
 +                   { "Arial", 0, "Regular", 's' },
 +                   { "Arial", 0, "Regular", '^' },
@@ -2841,25 +2902,15 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.h freetype-subpixel/src/truetype/t
 +
 +  /* allow a ZP2 move along freedom vector if matched; */
 +  /* this is called from SHP, SHPIX, SHC, SHZ          */
-+#define ALLOW_MOVEZP2_FREEV_RULES_SIZE  14
++#define ALLOW_MOVEZP2_FREEV_RULES_SIZE  3
 +  SPH_TweakRule  ALLOW_MOVEZP2_FREEV_Rules
 +                   [ALLOW_MOVEZP2_FREEV_RULES_SIZE] =
 +                 {
-+                   { "-", 0, "Regular", 0 },
-+                   { "-Verdana", 12, "Regular", 0 },
-+                   { "Verdana", 13, "Regular", 0 },
-+                   { "-Times New Roman", 0, "Regular", 0 },
-+                   { "-Courier New", 0, "Bold", 0 },
-+                   { "-Tahoma", 0, "Regular", 0 },
-+                   { "-Courier New", 0, "", 0 },
 +                   { "Arial", 13, "Regular", 0 },
 +                   { "Arial", 14, "Regular", 0 },
-+                   { "-Arial", 0, "Bold", 0 },
-+                   { "+++Trebuchet MS", 0, "Regular", 0 },
-+                   { "-Trebuchet MS", 0, "Bold", 0 },
-+                   { "-Verdana", 13, "Regular", 0 },
++                   { "Verdana", 13, "Regular", 0 },
 +                   /* this needs a bit of work though */
-+                   { "-Microsoft Sans Serif", 0, "Regular", 0 },
++                   /*{ "Microsoft Sans Serif", 0, "Regular", 0 },*/
 +                 };
 +
 +  /* return MS rasterizer version 35 if matched */
@@ -2872,17 +2923,15 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.h freetype-subpixel/src/truetype/t
 +
 +  /************** DIRTY, DIRTY HACKS! ***************/
 +
-+#define ALLOW_MOVEZP2_FREEV_RULES_EXCEPTIONS_SIZE  11
++#define ALLOW_MOVEZP2_FREEV_RULES_EXCEPTIONS_SIZE  9
 +  SPH_TweakRule  ALLOW_MOVEZP2_FREEV_Rules_Exceptions
 +                   [ALLOW_MOVEZP2_FREEV_RULES_EXCEPTIONS_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
 +                   { "Times New Roman", 0, "Regular", 'a' },
 +                   { "Times New Roman", 0, "Regular", 'q' },
 +                   { "Verdana", 13, "Regular", 'N' },
 +                   { "Verdana", 13, "Regular", 'f' },
 +                   { "Verdana", 13, "Regular", 'v' },
-+                   { "-------", 13, "Regular", 'k' },
 +                   { "Verdana", 13, "Regular", 'w' },
 +                   { "Verdana", 13, "Regular", 'x' },
 +                   { "Verdana", 13, "Regular", 'y' },
@@ -2894,171 +2943,155 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.h freetype-subpixel/src/truetype/t
 +  /* these only have an effect on fonts that are allowed to move X */
 +  /* (see above); it appears that all MS ClearType fonts may be OK */
 +  /* using normal rounds                                           */
-+#define NORMAL_ROUND_MIRP_RULES_SIZE  16
++#define NORMAL_ROUND_MIRP_RULES_SIZE  3
 +  SPH_TweakRule  NORMAL_ROUND_MIRP_Rules
 +                   [NORMAL_ROUND_MIRP_RULES_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "-Tahoma", 9, "Regular", 0 },
-+                   { "-Courier New", 0, "Regular", 'W' },
-+                   { "-Courier New", 0, "Regular", 'K' },
-+                   { "-Courier New", 0, "Regular", 'k' },
-+                   { "-Courier New", 0, "Regular", 'V' },
-+                   { "-Courier New", 0, "Regular", 'O' },
-+                   { "-Courier New", 0, "Regular", 'X' },
-+                   { "-Courier New", 0, "Regular", 'Y' },
-+                   { "-Courier New", 0, "Regular", 'A' },
-+                   { "-Courier New", 0, "Regular", 'v' },
-+                   { "-Courier New", 0, "Regular", 'z' },
-+                   { "-Courier New", 0, "Regular", 'x' },
-+                   { "-Courier New", 0, "Regular", 'y' },
-+                   { "Calibri", 0, "Italic", 0 },
 +                   { "Calibri", 0, "Bold Italic", 0 },
++                   { "Calibri", 0, "Italic", 0 },
++                   { "Courier New", 0, "", 0 },
 +                 };
 +
-+#define NORMAL_ROUND_MIAP_RULES_SIZE  16
++#define NORMAL_ROUND_MIAP_RULES_SIZE  3
 +  SPH_TweakRule  NORMAL_ROUND_MIAP_Rules
 +                   [NORMAL_ROUND_MIAP_RULES_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "-Tahoma", 9, "Regular", 0 },
-+                   { "-Courier New", 0, "Regular", 'W' },
-+                   { "-Courier New", 0, "Regular", 'K' },
-+                   { "-Courier New", 0, "Regular", 'k' },
-+                   { "-Courier New", 0, "Regular", 'V' },
-+                   { "-Courier New", 0, "Regular", 'O' },
-+                   { "-Courier New", 0, "Regular", 'X' },
-+                   { "-Courier New", 0, "Regular", 'Y' },
-+                   { "-Courier New", 0, "Regular", 'A' },
-+                   { "-Courier New", 0, "Regular", 'v' },
-+                   { "-Courier New", 0, "Regular", 'z' },
-+                   { "-Courier New", 0, "Regular", 'x' },
-+                   { "-Courier New", 0, "Regular", 'y' },
-+                   { "Calibri", 0, "Italic", 0 },
 +                   { "Calibri", 0, "Bold Italic", 0 },
++                   { "Calibri", 0, "Italic", 0 },
++                   { "Courier New", 0, "", 0 },
 +                 };
 +
-+#define NORMAL_ROUND_MDRP_RULES_SIZE  16
++#define NORMAL_ROUND_MDRP_RULES_SIZE  3
 +  SPH_TweakRule  NORMAL_ROUND_MDRP_Rules
 +                   [NORMAL_ROUND_MDRP_RULES_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "-Tahoma", 9, "Regular", 0 },
-+                   { "-Courier New", 0, "Regular", 'W' },
-+                   { "-Courier New", 0, "Regular", 'K' },
-+                   { "-Courier New", 0, "Regular", 'k' },
-+                   { "-Courier New", 0, "Regular", 'V' },
-+                   { "-Courier New", 0, "Regular", 'O' },
-+                   { "-Courier New", 0, "Regular", 'X' },
-+                   { "-Courier New", 0, "Regular", 'Y' },
-+                   { "-Courier New", 0, "Regular", 'A' },
-+                   { "-Courier New", 0, "Regular", 'v' },
-+                   { "-Courier New", 0, "Regular", 'z' },
-+                   { "-Courier New", 0, "Regular", 'x' },
-+                   { "-Courier New", 0, "Regular", 'y' },
-+                   { "Calibri", 0, "Italic", 0 },
 +                   { "Calibri", 0, "Bold Italic", 0 },
++                   { "Calibri", 0, "Italic", 0 },
++                   { "Courier New", 0, "", 0 },
 +                 };
 +
-+#define NORMAL_ROUND_MDAP_RULES_SIZE  16
++#define NORMAL_ROUND_MDAP_RULES_SIZE  3
 +  SPH_TweakRule  NORMAL_ROUND_MDAP_Rules
 +                   [NORMAL_ROUND_MDAP_RULES_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "-Tahoma", 9, "Regular", 0 },
-+                   { "-Courier New", 0, "Regular", 'W' },
-+                   { "-Courier New", 0, "Regular", 'K' },
-+                   { "-Courier New", 0, "Regular", 'k' },
-+                   { "-Courier New", 0, "Regular", 'V' },
-+                   { "-Courier New", 0, "Regular", 'O' },
-+                   { "-Courier New", 0, "Regular", 'X' },
-+                   { "-Courier New", 0, "Regular", 'Y' },
-+                   { "-Courier New", 0, "Regular", 'A' },
-+                   { "-Courier New", 0, "Regular", 'v' },
-+                   { "-Courier New", 0, "Regular", 'z' },
-+                   { "-Courier New", 0, "Regular", 'x' },
-+                   { "-Courier New", 0, "Regular", 'y' },
-+                   { "Calibri", 0, "Italic", 0 },
 +                   { "Calibri", 0, "Bold Italic", 0 },
++                   { "Calibri", 0, "Italic", 0 },
++                   { "Courier New", 0, "", 0 },
 +                 };
 +
 +
 +  /* skip IUP instructions if matched */
-+#define SKIP_IUP_RULES_SIZE  6
++#define SKIP_IUP_RULES_SIZE  1
 +  SPH_TweakRule  SKIP_IUP_Rules
 +                   [SKIP_IUP_RULES_SIZE] =
 +                 {
 +                   { "Arial", 13, "Regular", 'a' },
-+                   { "-", 0, "Regular", '2' },
-+                   { "-", 0, "", 0 },
-+                   { "-", 0, "Regular", 'a' },
-+                   { "-", 0, "Regular", 'V' },
-+                   { "-", 0, "Light", 0 },
 +                 };
 +
 +  /* skip DELTAP instructions if matched */
-+#define ALWAYS_SKIP_DELTAP_RULES_SIZE  19
++#define ALWAYS_SKIP_DELTAP_RULES_SIZE  11
 +  SPH_TweakRule  ALWAYS_SKIP_DELTAP_Rules
 +                   [ALWAYS_SKIP_DELTAP_RULES_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "--Courier New", 0, "Regular", 'V' },
-+                   { "Verdana", 10, "Regular", 0 },
-+                   { "-Trebuchet MS", 0, "Regular", 'W' },
-+                   { "-Trebuchet MS", 0, "Regular", 'w' },
-+                   { "-Verdana", 0, "Italic", 'v' },
-+                   { "-Verdana", 0, "Italic", 'w' },
-+                   { "-Verdana", 0, "Italic", 'x' },
-+                   { "-Verdana", 0, "Italic", 'y' },
-+                   { "-Verdana", 0, "Italic", 'z' },
-+                   { "-Verdana", 0, "Regular", 'v' },
-+                   { "-Verdana", 10, "Regular", 'w' },
-+                   { "-Verdana", 0, "Regular", 'y' },
-+                   { "-Verdana", 0, "Regular", 'z' },
-+                   { "-Arial Bold", 0, "Bold", 's' },
-+                   { "Trebuchet MS", 14, "Regular", 'e' },
++                   { "Georgia", 0, "Regular", '7' },
++                   { "Georgia", 0, "Regular", 'A' },
++                   { "Georgia", 0, "Regular", 'N' },
++                   { "Georgia", 0, "Regular", 'V' },
++                   { "Georgia", 0, "Regular", 'W' },
++                   { "Georgia", 0, "Regular", 'X' },
++                   { "Georgia", 0, "Regular", 'Y' },
++                   { "Georgia", 0, "Regular", 'k' },
 +                   { "Trebuchet MS", 0, "Italic", 0 },
-+                   { "-Arial", 0, "Italic", 0 },
-+                   { "-", 0, "Italic", 0 },
++                   { "Trebuchet MS", 14, "Regular", 'e' },
++                   { "Verdana", 10, "Regular", 0 },
 +                 };
 +
 +  /* always do DELTAP instructions if matched */
-+#define ALWAYS_DO_DELTAP_RULES_SIZE  3
++#define ALWAYS_DO_DELTAP_RULES_SIZE  8
 +  SPH_TweakRule  ALWAYS_DO_DELTAP_Rules
 +                   [ALWAYS_DO_DELTAP_RULES_SIZE] =
 +                 {
-+                   { "-", 0, "", 0 },
-+                   { "DejaVu Sans", 14, "Regular", 'k' },
-+                   { "DejaVu Sans", 14, "Regular", 'K' },
++                   { "Bitstream Vera Sans", 14, "Roman", 'K' },
++                   { "Bitstream Vera Sans", 14, "Roman", 'k' },
++                   { "Bitstream Vera Sans", 17, "Roman", 'K' },
++                   { "Bitstream Vera Sans", 17, "Roman", 'k' },
++                   { "DejaVu Sans", 14, "Book", 'K' },
++                   { "DejaVu Sans", 14, "Book", 'k' },
++                   { "DejaVu Sans", 17, "Book", 'K' },
++                   { "DejaVu Sans", 17, "Book", 'k' },
++                   
 +                 };
 +
 +  /* do an extra RTG instruction in DELTAP if matched */
-+#define DELTAP_RTG_RULES_SIZE  4
++#define DELTAP_RTG_RULES_SIZE  1
 +  SPH_TweakRule  DELTAP_RTG_Rules
 +                   [DELTAP_RTG_RULES_SIZE] =
 +                 {
-+                   { "-Arial Unicode MS", 0, "Regular", 0 },
-+                   { "-Microsoft Sans Serif", 0, "Regular", '0' },
-+                   { "--Verdana", 0, "", 0 },
-+                   { "-Trebuchet MS", 14, "Regular", 'e' },
-+                 };
-+
-+  /* do an extra RUTG instruction in DELTAP if matched */
-+#define DELTAP_RUTG_RULES_SIZE  2
-+  SPH_TweakRule  DELTAP_RUTG_Rules
-+                   [DELTAP_RUTG_RULES_SIZE] =
-+                 {
-+                   { "-", 14, "Regular", 'e' },
 +                   { "-", 0, "", 0 },
 +                 };
 +
++  /* do an extra RUTG instruction in DELTAP if matched */
++#define DELTAP_RUTG_RULES_SIZE  1
++  SPH_TweakRule  DELTAP_RUTG_Rules
++                   [DELTAP_RUTG_RULES_SIZE] =
++                 {
++                   { "-", 0, "", 0 },
++                 };
++
++
++#define NO_ALIGNRP_AFTER_IUP_RULES_SIZE  4
++  SPH_TweakRule  NO_ALIGNRP_AFTER_IUP_Rules
++                   [NO_ALIGNRP_AFTER_IUP_RULES_SIZE] =
++                 {
++                   { "Courier New", 0, "Bold", 'C' },
++                   { "Courier New", 0, "Bold", 'D' },
++                   { "Courier New", 0, "Bold", 'Q' },
++                   { "Courier New", 0, "Bold", '0' },  
++                 };
++
++
++#define NO_CALL_AFTER_IUP_RULES_SIZE  3
++  SPH_TweakRule  NO_CALL_AFTER_IUP_Rules
++                   [NO_CALL_AFTER_IUP_RULES_SIZE] =
++                 {
++                   { "Courier New", 0, "Bold", 'O' },  
++                   { "Courier New", 0, "Bold", 'Q' },                     
++                   { "Courier New", 0, "Bold", 'k' },                    
++                 };
++                 
++
++#define DEEMBOLDEN_RULES_SIZE  9
++  SPH_TweakRule  DEEMBOLDEN_Rules
++                   [DEEMBOLDEN_RULES_SIZE] =
++                 {
++                   { "Courier New", 0, "Bold", 'A' },
++                   { "Courier New", 0, "Bold", 'W' },
++                   { "Courier New", 0, "Bold", 'w' },
++                   { "Courier New", 0, "Bold", 'M' },
++                   { "Courier New", 0, "Bold", 'X' },
++                   { "Courier New", 0, "Bold", 'K' },
++                   { "Courier New", 0, "Bold", 'x' },
++                   { "Courier New", 0, "Bold", 'z' },
++                   { "Courier New", 0, "Bold", 'v' },
++                 };
++
++#define EMBOLDEN_RULES_SIZE  3
++  SPH_TweakRule  EMBOLDEN_Rules
++                   [EMBOLDEN_RULES_SIZE] =
++                 {
++                   { "Courier New", 12, "Italic", 'z' },
++                   { "Courier New", 11, "Italic", 'z' },
++                   { "Courier New", 10, "Italic", 'z' },
++                 };
++
 +  /* do an extra RDTG instruction in DELTAP if matched */
-+#define DELTAP_RDTG_RULES_SIZE 28
++#define DELTAP_RDTG_RULES_SIZE 24
 +  SPH_TweakRule  DELTAP_RDTG_Rules
 +                   [DELTAP_RDTG_RULES_SIZE] =
 +                 {
 +                   { "Calibri", 0, "Italic", 0 },
 +                   { "Comic Sans MS", 0, "Regular", 0 },
++                   { "Courier New", 0, "Regular", '2' },                    
 +                   { "Lucida Grande", 0, "Regular", 'e' },
 +                   { "Lucida Grande", 12, "Bold", 0 },
 +                   { "Microsoft Sans Serif", 0, "Regular", '7' },
@@ -3067,16 +3100,11 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.h freetype-subpixel/src/truetype/t
 +                   { "Microsoft Sans Serif", 0, "Regular", 'X' },
 +                   { "Microsoft Sans Serif", 0, "Regular", 'e' },
 +                   { "Microsoft Sans Serif", 0, "Regular", 'o' },
-+                   { "-", 0, "", 0 },
-+                   { "-", 0, "Regular", 'O' },
-+                   { "-", 0, "Regular", 'U' },
-+                   { "-", 0, "Regular", 'e' },
-+                   { "-", 0, "Regular", 'g' },
 +                   { "Tahoma", 0, "Bold", '0' },
-+                   { "Tahoma", 16, "Bold", 'C' },
 +                   { "Tahoma", 16, "Bold Italic", 'C' },
++                   { "Tahoma", 16, "Bold", 'C' },
 +                   { "Trebuchet MS", 0, "", '0' },
-+                   { "-", 9, "", 'w' },
++                   { "Trebuchet MS", 14, "Regular", 'e' },
 +                   { "Verdana", 0, "", '0' },
 +                   { "Verdana", 0, "Bold Italic", '7' },
 +                   { "Verdana", 0, "Bold Italic", 'v' },
@@ -3084,8 +3112,9 @@ diff -Nur freetype-orig/src/truetype/ttsubpix.h freetype-subpixel/src/truetype/t
 +                   { "Verdana", 0, "Bold", 0 },
 +                   { "Verdana", 0, "Italic", 'o' },
 +                   { "Verdana", 0, "Regular", 'x' },
-+                   { "Trebuchet MS", 14, "Regular", 'e' },
++                   { "Verdana", 10, "Regular", 'w' },
 +                 };
++
 +
 +#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING_ADDITIONAL_TWEAKS */
 +#endif /* TT_CONFIG_OPTION_SUBPIXEL_HINTING */
