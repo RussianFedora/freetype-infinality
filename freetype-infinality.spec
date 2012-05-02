@@ -15,7 +15,7 @@
 Summary: A free and portable font rendering engine
 Name: freetype-infinality
 Version: 2.4.9
-Release: 1.%{infinalityrelease}%{?dist}
+Release: 2.%{infinalityrelease}%{?dist}
 License: FTL or GPLv2+
 Group: System Environment/Libraries
 URL: http://www.freetype.org
@@ -83,19 +83,19 @@ ld.so.conf.d.
 #small utilities showing various capabilities of the FreeType library.
 
 
-%package devel
-Summary: FreeType development libraries and header files
-Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}
-Requires: zlib-devel
-Requires: pkgconfig
+#%package devel
+#Summary: FreeType development libraries and header files
+#Group: Development/Libraries
+#Requires: %{name} = %{version}-%{release}
+#Requires: zlib-devel
+#Requires: pkgconfig
 
-%description devel
-The freetype-devel package includes the static libraries and header files
-for the FreeType font rendering engine.
+#%description devel
+#The freetype-devel package includes the static libraries and header files
+#for the FreeType font rendering engine.
 
-Install freetype-devel if you want to develop programs which will use
-FreeType.
+#Install freetype-devel if you want to develop programs which will use
+#FreeType.
 
 
 %prep
@@ -230,6 +230,14 @@ tar jcf %{name}-%{version}-%{infinalityrelease}-%{_arch}.tar.bz2 %{name}.sh `bas
 rm %{name}.sh `basename  %{SOURCE91}` `basename  %{SOURCE92}` `basename  %{PATCH20}` `basename  %{PATCH21}` `basename  %{PATCH22}`
 cd -
 
+#Remove devel subpackage
+rm -rf $RPM_BUILD_ROOT%{_includedir}/freetype2
+rm -rf $RPM_BUILD_ROOT%{_datadir}/aclocal/freetype2.m4
+rm -rf $RPM_BUILD_ROOT%{_includedir}/freetype2/*
+rm -rf $RPM_BUILD_ROOT%{_includedir}/*.h
+rm -rf $RPM_BUILD_ROOT%{_bindir}/freetype-config
+rm -rf $RPM_BUILD_ROOT%{_libdir}/pkgconfig/freetype2.pc
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -291,15 +299,15 @@ rm -rf $RPM_BUILD_ROOT
 #%endif
 #%doc ChangeLog README
 
-%files devel
-%defattr(-,root,root)
-%dir %{_includedir}/freetype2
-%{_datadir}/aclocal/freetype2.m4
-%{_includedir}/freetype2/*
-%{_includedir}/*.h
+#%files devel
+#%defattr(-,root,root)
+#%dir %{_includedir}/freetype2
+#%{_datadir}/aclocal/freetype2.m4
+#%{_includedir}/freetype2/*
+#%{_includedir}/*.h
 #%{_libdir}/libfreetype.so
-%{_bindir}/freetype-config
-%{_libdir}/pkgconfig/freetype2.pc
+#%{_bindir}/freetype-config
+#%{_libdir}/pkgconfig/freetype2.pc
 #%doc docs/design
 #%doc docs/glyphs
 #%doc docs/reference
