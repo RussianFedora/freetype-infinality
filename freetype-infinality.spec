@@ -1,61 +1,39 @@
-# Patented subpixel rendering disabled by default.
-# Pass '--with subpixel_rendering' on rpmbuild command-line to enable.
-#%{!?_with_subpixel_rendering: %{!?_without_subpixel_rendering: %define _without_subpixel_rendering --without-subpixel_rendering}}
-
 %{!?with_xfree86:%define with_xfree86 1}
 
-%define infinalityrelease 20120403_02
-
+%define infinalityrelease 20120616_01
 %define freetypemajorversion 6
-
-%define freetypelibversion 6.8.1
-%define oldfreetypelibversion 6.8.0
+%define freetypelibversion 6.9.0
+%define oldfreetypelibversion 6.8.1
 %define createsymlink 1
 
 Summary: A free and portable font rendering engine
 Name: freetype-infinality
-Version: 2.4.9
-Release: 2.%{infinalityrelease}%{?dist}
+Version: 2.4.10
+Release: 1.%{infinalityrelease}%{?dist}
 License: FTL or GPLv2+
 Group: System Environment/Libraries
 URL: http://www.freetype.org
 Source:  http://download.savannah.gnu.org/releases/freetype/freetype-%{version}.tar.bz2
-#Source1: http://download.savannah.gnu.org/releases/freetype/freetype-doc-%{version}.tar.bz2
-#Source2: http://download.savannah.gnu.org/releases/freetype/ft2demos-%{version}.tar.bz2
 
-Patch20: freetype-add-subpixel-hinting-infinality-20120403-01.patch
-Patch21: freetype-enable-subpixel-hinting-infinality-20120403-01.patch
-Patch22: freetype-entire-infinality-patchset-20120403-01.patch
+Patch20: freetype-add-subpixel-hinting-infinality-20120616-01.patch
+Patch21: freetype-enable-subpixel-hinting-infinality-20120615-01.patch
+Patch22: freetype-entire-infinality-patchset-20120615-01.patch
 
 Source91: infinality-settings.sh
 Source92: README.infinality
 
-# Enable otvalid and gxvalid modules
-Patch46:  freetype-2.2.1-enable-valid.patch
-# Enable additional demos
-Patch47:  freetype-2.3.11-more-demos.patch
-
 # Fix multilib conflicts
 Patch88:  freetype-multilib.patch
-
-Patch89:  freetype-2.4.9-CVE-2012-1139.patch
-Patch90:  freetype-2.4.9-CVE-2012-1141.patch
-
-# https://savannah.nongnu.org/bugs/?35833
-Patch91:  freetype-2.4.9-loop-exit-condition.patch
-
-#https://savannah.nongnu.org/bugs/?35847
-Patch92:  freetype-2.4.9-incremental-interface.patch
 
 Buildroot: %{_tmppath}/%{name}-%{version}-root-%(%{__id_u} -n)
 
 BuildRequires: libX11-devel
 
-Provides: %{name}-bytecode
-Provides: freetype-infinality
+Provides: %{name}-bytecode = %{version}
+Provides: freetype-infinality = %{version}
 Requires: fontconfig-infinality
 Obsoletes: freetype-subpixel
-Conflicts: freetype-freeworld
+Obsoletes: freetype-freeworld
 
 Requires:      /etc/ld.so.conf.d
 
@@ -71,53 +49,29 @@ This version is compiled with the patented bytecode interpreter and subpixel
 rendering enabled. It transparently overrides the system library using
 ld.so.conf.d.
 
-#%package demos
-#Summary: A collection of FreeType demos
-#Group: System Environment/Libraries
-#Requires: %{name} = %{version}-%{release}
+%package devel
+Summary: FreeType development libraries and header files
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+Requires: zlib-devel
+Requires: pkgconfig
 
-#%description demos
-#The FreeType engine is a free and portable font rendering
-#engine, developed to provide advanced font support for a variety of
-#platforms and environments.  The demos package includes a set of useful
-#small utilities showing various capabilities of the FreeType library.
+%description devel
+The freetype-devel package includes the static libraries and header files
+for the FreeType font rendering engine.
 
-
-#%package devel
-#Summary: FreeType development libraries and header files
-#Group: Development/Libraries
-#Requires: %{name} = %{version}-%{release}
-#Requires: zlib-devel
-#Requires: pkgconfig
-
-#%description devel
-#The freetype-devel package includes the static libraries and header files
-#for the FreeType font rendering engine.
-
-#Install freetype-devel if you want to develop programs which will use
-#FreeType.
+Install freetype-devel if you want to develop programs which will use
+FreeType.
 
 
 %prep
-#%setup -q -b 1 -a 2
 %setup -q -n freetype-%{version}
 
 %patch20  -p1 -b .add-subpixel-hinting
 %patch21  -p1 -b .enable-subpixel-hinting
 %patch22  -p1 -b .entire-infinality-patchset
-#%patch23  -p1 -b .temporary-filter-fix
-
-#%patch46  -p1 -b .enable-valid
-
-#pushd ft2demos-%{version}
-#%patch47  -p1 -b .more-demos
-#popd
 
 %patch88 -p1 -b .multilib
-%patch89 -p1 -b .CVE-2012-1139
-%patch90 -p1 -b .CVE-2012-1141
-%patch91 -p1 -b .loop-exit-condition
-%patch92 -p1 -b .incremental-interface
 
 %build
 
@@ -125,13 +79,6 @@ ld.so.conf.d.
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' builds/unix/libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' builds/unix/libtool
 make %{?_smp_mflags}
-
-#%if %{with_xfree86}
-## Build demos
-#pushd ft2demos-%{version}
-#make TOP_DIR=".."
-#popd
-#%endif
 
 # Convert FTL.txt to UTF-8
 pushd docs
@@ -146,19 +93,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %makeinstall gnulocaledir=$RPM_BUILD_ROOT%{_datadir}/locale
-
-#{
-#  for ftdemo in ftbench ftchkwd ftmemchk ftpatchk fttimer ftdump ftlint ftmemchk ftvalid ; do
-#      builds/unix/libtool --mode=install install -m 755 ft2demos-%{version}/bin/$ftdemo $RPM_BUILD_ROOT/%{_bindir}
-#  done
-#}
-#%if %{with_xfree86}
-#{
-#  for ftdemo in ftdiff ftgamma ftgrid ftmulti ftstring fttimer ftview ; do
-#      builds/unix/libtool --mode=install install -m 755 ft2demos-%{version}/bin/$ftdemo $RPM_BUILD_ROOT/%{_bindir}
-#  done
-#}
-#%endif
 
 # fix multilib issues
 %ifarch x86_64 s390x ia64 ppc64 alpha sparc64
@@ -216,7 +150,6 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/profile.d
 /bin/echo "PRELOAD=1; if [ -f /etc/sysconfig/fonts ]; then . /etc/sysconfig/fonts; fi; A1=\`arch\`; A2=%{_arch}; if [ \"\${A1:0:1}\" = \"\${A2:0:1}\" -a ! \"\$PRELOAD\" = \"0\" ]; then ADDED=\`/bin/echo \$LD_PRELOAD | grep \"%{_libdir}/libfreetype.so.6\" | wc -l\`; if [ \"\$ADDED\" = \"0\" ]; then export LD_PRELOAD=%{_libdir}/%{name}/libfreetype.so.%{freetypemajorversion}:\$LD_PRELOAD ; fi; fi" > $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/%{name}-%{_arch}.sh
 
 mkdir -p $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
-#cp %{SOURCE90} $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
 cp %{SOURCE91} $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
 cp %{SOURCE92} $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
 cp %{PATCH20} $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
@@ -229,14 +162,6 @@ cd $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/
 tar jcf %{name}-%{version}-%{infinalityrelease}-%{_arch}.tar.bz2 %{name}.sh `basename  %{SOURCE91}` `basename  %{SOURCE92}` `basename  %{PATCH20}` `basename  %{PATCH21}` `basename  %{PATCH22}`
 rm %{name}.sh `basename  %{SOURCE91}` `basename  %{SOURCE92}` `basename  %{PATCH20}` `basename  %{PATCH21}` `basename  %{PATCH22}`
 cd -
-
-#Remove devel subpackage
-rm -rf $RPM_BUILD_ROOT%{_includedir}/freetype2
-rm -rf $RPM_BUILD_ROOT%{_datadir}/aclocal/freetype2.m4
-rm -rf $RPM_BUILD_ROOT%{_includedir}/freetype2/*
-rm -rf $RPM_BUILD_ROOT%{_includedir}/*.h
-rm -rf $RPM_BUILD_ROOT%{_bindir}/freetype-config
-rm -rf $RPM_BUILD_ROOT%{_libdir}/pkgconfig/freetype2.pc
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -253,7 +178,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %post 
 /sbin/ldconfig
-#/usr/sbin/semanage fcontext -a -t textrel_shlib_t %{_libdir}/freetype-infinality/libfreetype.so.%{freetypelibversion}
 /usr/sbin/semanage fcontext -a -t textrel_shlib_t /usr/lib/freetype-infinality/libfreetype.so.%{freetypelibversion}
 /sbin/restorecon %{_libdir}/freetype-infinality/libfreetype.so.%{freetypelibversion}
 #/bin/echo
@@ -272,48 +196,24 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 %doc README
 %doc docs/LICENSE.TXT docs/FTL.TXT 
-#docs/GPL.TXT
 %doc docs/CHANGES docs/VERSION.DLL docs/formats.txt 
-#docs/ft2faq.html
 /usr/share/doc/%{name}-%{version}/%{name}-%{version}-%{infinalityrelease}-%{_arch}.tar.bz2
 
-#%files demos
-#%defattr(-,root,root)
-#%{_bindir}/ftbench
-#%{_bindir}/ftchkwd
-#%{_bindir}/ftmemchk
-#%{_bindir}/ftpatchk
-#%{_bindir}/fttimer
-#%{_bindir}/ftdump
-#%{_bindir}/ftlint
-#%{_bindir}/ftmemchk
-#%{_bindir}/ftvalid
-#%if %{with_xfree86}
-#%{_bindir}/ftdiff
-#%{_bindir}/ftgamma
-#%{_bindir}/ftgrid
-#%{_bindir}/ftmulti
-#%{_bindir}/ftstring
-#%{_bindir}/fttimer
-#%{_bindir}/ftview
-#%endif
-#%doc ChangeLog README
+%files devel
+%defattr(-,root,root)
+%dir %{_includedir}/freetype2
+%{_datadir}/aclocal/freetype2.m4
+%{_includedir}/freetype2/*
+%{_includedir}/*.h
+%{_bindir}/freetype-config
+%{_libdir}/pkgconfig/freetype2.pc
 
-#%files devel
-#%defattr(-,root,root)
-#%dir %{_includedir}/freetype2
-#%{_datadir}/aclocal/freetype2.m4
-#%{_includedir}/freetype2/*
-#%{_includedir}/*.h
-#%{_libdir}/libfreetype.so
-#%{_bindir}/freetype-config
-#%{_libdir}/pkgconfig/freetype2.pc
-#%doc docs/design
-#%doc docs/glyphs
-#%doc docs/reference
-#%doc docs/tutorial
 
 %changelog
+* Sun Dec 16 2012 Arkady L. Shane <ashejn@russianfedora.ru> - 2.4.10-1
+- cleanup spec
+- sync with infinality.net
+
 * Fri Mar 30 2012 Marek Kasik <mkasik@redhat.com> 2.4.9-1
 - Update to 2.4.9
 - Fixes various CVEs
